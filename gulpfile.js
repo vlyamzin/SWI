@@ -7,7 +7,7 @@ var tsify = require('tsify');
 
 
 var paths = {
-    pages: ['src/*.html'],
+    pages: ['client/*.html'],
     clientDest: 'bin/www'
 };
 
@@ -15,7 +15,7 @@ gulp.task('client', ['copy-html'], function () {
     return browserify({
         basedir: '.',
         debug: true,
-        entries: ['client/gui/board.ts', 'client/gui/index.ts'],
+        entries: ['client/gui/index.ts'],
         cache: {},
         packageCache: {}
     })
