@@ -4,8 +4,9 @@
     "target": "es5",
     "sourceMap": true
   },
+  "types" : ["node", "lodash", "express"],
   "exclude": [
     "node_modules"
   ],
-  "files": []
+  "files": ["client/*.ts"]
 }
