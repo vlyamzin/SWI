@@ -1,1 +1,1 @@
-# SWI
+# Twilight Imperium - Start Wars edition
