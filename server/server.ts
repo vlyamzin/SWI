@@ -62,27 +62,27 @@ export class Server {
         //add static paths
         this.app.use(express.static(path.join(__dirname, "www")));
 
-        this.app.use(logger("dev")); // use logger middleware // TODO
+        this.app.use(logger("dev")); // use logger middleware
 
-        this.app.use(bodyParser.json()); //use json form parser middlware
+        this.app.use(bodyParser.json()); // use json form parser middleware
 
-        //use query string parser middleware
+        // use query string parser middleware
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
 
-        this.app.use(cookieParser("SECRET_GOES_HERE"));//use cookie parser middleware // TODO secret
+        this.app.use(cookieParser("SECRET_GOES_HERE")); // use cookie parser middleware
 
-        //use override middleware
+        // use override middleware
         this.app.use(methodOverride());
 
-        //catch 404 and forward to error handler
+        // catch 404 and forward to error handler
         this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
             err.status = 404;
             next(err);
         });
 
-        this.app.use(errorHandler()); //error handling
+        this.app.use(errorHandler()); // error handling
     }
 
     /**

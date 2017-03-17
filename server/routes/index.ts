@@ -46,15 +46,6 @@ export class IndexRoute extends BaseRoute {
      * @next {NextFunction} Execute the next method.
      */
     public index(req: Request, res: Response, next: NextFunction) {
-        //set custom title
-        this.title = "Home | SWI";
-
-        //set options
-        let options: Object = {
-            "message": "Welcome to the SWI"
-        };
-
-        //render template
-        this.render(req, res, "index.html", options);
+        this.render(req, res, "index.html");
     }
 }
