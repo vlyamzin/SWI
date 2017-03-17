@@ -48,12 +48,6 @@ export class BaseRoute {
      * @return void
      */
     public render(req: Request, res: Response, view: string, options?: Object) {
-
-        res.locals.BASE_URL = "/"; // add constants
-        res.locals.scripts = this.scripts; // add scripts
-        res.locals.title = this.title; // add title
-        // res.render(view, options); // render view // TODO
-
-        res.send("<h1>Hello World!</h1>");
+        res.sendFile(view);
     }
 }

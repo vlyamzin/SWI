@@ -4,8 +4,8 @@
   "description": "Twilight Imperium - Star Wars edition",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch dist ./dist/www.js",
-    "start": "node ./dist/www.js",
+    "dev-server": "nodemon --watch bin ./bin/www.js",
+    "start": "node ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server-ts": "gulp server-ts --no-emit"
   },

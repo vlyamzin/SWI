@@ -60,13 +60,9 @@ export class Server {
      */
     public config() {
         //add static paths
-        this.app.use(express.static(path.join(__dirname, "public")));
+        this.app.use(express.static(path.join(__dirname, "www")));
 
-        // configure pug
-        // this.app.set("views", path.join(__dirname, "views"));
-        // this.app.set("view engine", "pug");
-
-        // this.app.use(logger("dev")); // use logger middleware // TODO
+        this.app.use(logger("dev")); // use logger middleware // TODO
 
         this.app.use(bodyParser.json()); //use json form parser middlware
 

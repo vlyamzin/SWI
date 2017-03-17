@@ -9,7 +9,7 @@ let paths = {
     pages: ['src/*.html'],
     clientDest: 'bin/www',
     server: ['server/**/*.ts'],
-    serverDest: 'dist'
+    serverDest: 'bin'
 };
 
 gulp.task('client', ['copy-html'], function () {
@@ -34,7 +34,7 @@ gulp.task('copy-html', function () {
 let serverBuildIterator = 0;
 
 /**
- * Build typescript server files and put them into ./dist
+ * Build typescript server files and put them into paths.serverDest
  * */
 gulp.task('server-ts', function () {
     let tsServer,
@@ -57,16 +57,16 @@ gulp.task('server-ts', function () {
                 process.exit(1);
             }
         })
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(paths.serverDest));
 });
 
 /**
- * Copy www.js file for server start into ./dist
+ * Copy www.js file for server start into paths.serverDest
  * */
 gulp.task('copy-www', function () {
     gulp
         .src('server/www.js')
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest(paths.serverDest));
 });
 
 /**
