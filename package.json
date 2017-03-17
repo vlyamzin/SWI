@@ -4,10 +4,11 @@
   "description": "Twilight Imperium - Star Wars edition",
   "main": "index.js",
   "scripts": {
-    "dev-server": "nodemon --watch bin ./bin/www.js",
-    "start": "node ./bin/www.js",
+    "start": "npm run client && npm run build-server && gulp copy-html && node ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server-ts": "gulp server-ts --no-emit",
+    "build-server": "gulp build-server --no-emit",
+    "watch-server-ts": "gulp watch-server",
+    "nodemon-server": "npm run client && gulp copy-html && nodemon --watch bin ./bin/www.js",
     "client": "./node_modules/.bin/webpack --config ./webpack.config.js"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "webpack": "2.2.1"
   },
   "pre-commit": [
-    "server-ts"
+    "build-server",
+    "client"
   ]
 }

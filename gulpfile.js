@@ -3,7 +3,7 @@ var ts = require('gulp-typescript');
 var runsequence = require('run-sequence');
 
 var paths = {
-    pages: ['src/*.html'],
+    pages: ['client/*.html'],
     clientDest: 'bin/www',
     server: ['server/**/*.ts'],
     serverDest: 'bin'
@@ -62,10 +62,10 @@ gulp.task('build-server', () => {
 /**
  * Watch server *.ts files (build server side before watching)
  * */
-gulp.task('server-watch', () => {
+gulp.task('watch-server', () => {
     runsequence('build-server');
 
     gulp.watch([paths.server], () => {
         runsequence('server-ts');
-    })
+    });
 });
