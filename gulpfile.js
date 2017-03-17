@@ -41,9 +41,9 @@ gulp.task('server-ts', function () {
         serverProject = ts.createProject('tsconfig.json', {
             target: 'es6',
             isolatedModules: Boolean(serverBuildIterator % 5),
-            sourceMap: false,
-            noEmitOnError: process.argv.indexOf('--no-emit') != -1
-        });
+            sourceMap: false
+        }),
+        failed = false;
 
     serverBuildIterator++;
 
@@ -51,7 +51,13 @@ gulp.task('server-ts', function () {
         .pipe(serverProject());
 
     return tsServer
-        .pipe(gulp.dest('dist'))
+        .on("error", function () { failed = true; })
+        .on("finish", function () {
+            if (failed && process.argv.indexOf('--no-emit') != -1) {
+                process.exit(1);
+            }
+        })
+        .pipe(gulp.dest('dist'));
 });
 
 /**

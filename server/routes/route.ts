@@ -54,10 +54,6 @@ export class BaseRoute {
         res.locals.title = this.title; // add title
         // res.render(view, options); // render view // TODO
 
-        let a = 5, c = 0;
-
-        c = a + '1243';
-
         res.send("<h1>Hello World!</h1>");
     }
 }
