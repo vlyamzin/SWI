@@ -35,10 +35,13 @@
     "method-override": "^2.3.7",
     "morgan": "^1.8.1",
     "nodemon": "^1.11.0",
+    "pre-commit": "^1.2.2",
     "run-sequence": "^1.2.2",
     "tsify": "3.0.1",
     "typescript": "2.2.1",
     "vinyl-source-stream": "1.1.0"
   },
-  "pre-commit": ["server-ts"]
+  "pre-commit": [
+    "server-ts"
+  ]
 }
