@@ -16,7 +16,7 @@ gulp.task('client', ['copy-html'], function () {
     return browserify({
         basedir: '.',
         debug: true,
-        entries: ['client/gui/board.ts', 'client/gui/index.ts'],
+        entries: ['client/gui/index.ts'],
         cache: {},
         packageCache: {}
     })
