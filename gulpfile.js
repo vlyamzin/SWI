@@ -1,43 +1,26 @@
-let gulp = require('gulp');
-let ts = require('gulp-typescript');
-let browserify = require('browserify');
-let source = require('vinyl-source-stream');
-let tsify = require('tsify');
-let runsequence = require('run-sequence');
+var gulp = require('gulp');
+var ts = require('gulp-typescript');
+var runsequence = require('run-sequence');
 
-let paths = {
+var paths = {
     pages: ['src/*.html'],
     clientDest: 'bin/www',
     server: ['server/**/*.ts'],
     serverDest: 'bin'
 };
 
-gulp.task('client', ['copy-html'], function () {
-    return browserify({
-        basedir: '.',
-        debug: true,
-        entries: ['client/gui/index.ts'],
-        cache: {},
-        packageCache: {}
-    })
-        .plugin(tsify)
-        .bundle()
-        .pipe(source('bundle.js'))
-        .pipe(gulp.dest(paths.clientDest));
-});
-
 gulp.task('copy-html', function () {
     return gulp.src(paths.pages)
         .pipe(gulp.dest(paths.clientDest));
 });
 
-let serverBuildIterator = 0;
+var serverBuildIterator = 0;
 
 /**
  * Build typescript server files and put them into paths.serverDest
  * */
 gulp.task('server-ts', function () {
-    let tsServer,
+    var tsServer,
         serverProject = ts.createProject('tsconfig.json', {
             target: 'es6',
             isolatedModules: Boolean(serverBuildIterator % 5),
