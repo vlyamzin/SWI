@@ -1,7 +1,9 @@
+var path = require("path");
+
 module.exports = {
-    entry: './client/gui/index.ts',
+    entry: path.join(__dirname, 'client/gui/index.ts'),
     output: {
-        path: "./bin/www/",
+        path: path.join(__dirname, 'bin/www'),
         filename: 'bundle.js'
     },
     resolve: {
@@ -9,9 +11,26 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js'] // note if using webpack 1 you'd also need a '' in the array as well
     },
     module: {
-        loaders: [ // loaders will work with webpack 1 or 2; but will be renamed "rules" in future
-            // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-            { test: /\.tsx?$/, loader: 'ts-loader' }
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
+                enforce: 'pre',
+                test: /\.js$/,
+                loader: "source-map-loader"
+            },
+            {
+                enforce: 'pre',
+                test: /\.tsx?$/,
+                use: "source-map-loader"
+            }
         ]
-    }
-}
+    },
+    devServer: {
+        port: 8081
+    },
+    devtool: 'inline-source-map'
+};
