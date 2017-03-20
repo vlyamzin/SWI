@@ -1,5 +1,5 @@
 import {Hex, IPoint} from "./hex"
-import {GameMap} from "./map"
+import {GameMap, IMapCoord} from "./map"
 import * as lodash from "lodash";
 
 
@@ -22,6 +22,11 @@ export class Board {
         this.hexSize = 64;
 
         this.draw(width, height);
+
+        // listen click on the game board
+        this.canvas.addEventListener('click', (event) => {
+            console.log(this.pixelToHex(event.pageX - this.boardCenter.x, event.pageY - this.boardCenter.y));
+        })
     }
 
     /**
@@ -70,7 +75,16 @@ export class Board {
                 hex.drawHex(this.context);
             }
         }
+    }
 
+    /**
+     * Transform pixel to the MapCoord object
+     * Used to retrieve Hex by coord
+     * */
+    public pixelToHex(a, b) {
+        let _a = a * 2/3 / this.hexSize,
+            _b = (-a/3 + Math.sqrt(3)/3 * b) / this.hexSize;
 
+        return Hex.hexRound(<IMapCoord>{a: _a, b: _b});
     }
 }

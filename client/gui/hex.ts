@@ -5,7 +5,11 @@ export interface IPoint {
     y: number
 }
 
-
+export interface ICube {
+    x: number,
+    z: number,
+    y: number
+}
 
 export class Hex {
     private corners: Array<IPoint> = [];
@@ -156,5 +160,53 @@ export class Hex {
 
     public get getMapCoords(): IMapCoord {
         return this.mapCoords;
+    }
+
+    /**
+     * Convert Hex a,b coordinates to the Cube x,y,z
+     * */
+    public static hexToCube(coord: IMapCoord): ICube {
+        return {
+            x: coord.a,
+            z: coord.b,
+            y: -coord.a-coord.b
+        }
+    }
+
+    /**
+     * Convert Cube x,y,z coordinates to the Hex a,b
+     * */
+    public static cubeToHex(coord: ICube): IMapCoord {
+        return { a: coord.x, b: coord.z };
+    }
+
+    /**
+     * Round coordinates of the Hex as Cube to integer
+     * */
+    public static cubeRound(coord: ICube): ICube {
+        let rx = Math.round(coord.x),
+            ry = Math.round(coord.y),
+            rz = Math.round(coord.z);
+
+        let xDiff = Math.abs(rx - coord.x),
+            yDiff = Math.abs(ry - coord.y),
+            zDiff = Math.abs(rz - coord.z);
+
+        if (xDiff > yDiff && xDiff > zDiff) {
+            rx = -ry-rz;
+        } else if (yDiff > zDiff) {
+            ry = -rx-rz;
+        } else {
+            rz = -rx-ry;
+        }
+
+        return { x: rx, y: ry, z: rz };
+    }
+
+    /**
+     * Round coordinates of the Hex to integer
+     * */
+    public static hexRound(coord: IMapCoord): IMapCoord {
+        return Hex.cubeToHex(Hex.cubeRound(Hex.hexToCube(coord)));
     }
 }

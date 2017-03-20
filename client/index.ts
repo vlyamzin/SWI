@@ -1,4 +1,4 @@
-import {IBoard, Board} from './board';
+import {IBoard, Board} from './gui/board';
 
 module UI {
     class Game {
