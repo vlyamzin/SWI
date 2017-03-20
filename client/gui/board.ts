@@ -32,7 +32,6 @@ export class Board {
     public draw(w: number, h: number): void {
         this.canvas.width = w;
         this.canvas.height = h;
-        this.context.fillRect(0, 0, w, h);
 
         this.boardCenter = {
             x: w/2,
