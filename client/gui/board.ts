@@ -14,6 +14,9 @@ export class Board {
     protected boardCenter: IPoint;
     protected hexSize: number;
     protected hexArray: Array<Hex> =[];
+    protected mouseIsDown: boolean = false;
+    protected prevX: number;
+    protected prevY: number;
 
     constructor(protected width: number, protected height: number) {
         this.canvas = <HTMLCanvasElement>document.getElementById('game');
@@ -21,11 +24,33 @@ export class Board {
         this.context.fillStyle = this.backgroundColor;
         this.hexSize = 64;
 
+        this.boardCenter = {
+            x: width/2,
+            y: height/2
+        };
         this.draw(width, height);
 
         // listen click on the game board
         this.canvas.addEventListener('click', (event) => {
-            console.log(this.pixelToHex(event.pageX - this.boardCenter.x, event.pageY - this.boardCenter.y));
+            if (event.shiftKey === false) {
+                console.log(this.pixelToHex(event.pageX - this.boardCenter.x, event.pageY - this.boardCenter.y));
+            }
+        });
+
+        this.canvas.addEventListener('mousedown', (event:MouseEventInit) => {
+            this.mouseIsDown = true;
+            this.prevX = event.clientX;
+            this.prevY = event.clientY;
+        });
+        this.canvas.addEventListener('mouseup', () => {
+            this.mouseIsDown = false;
+        });
+        this.canvas.addEventListener('mousemove', (event) => {
+            if(event.shiftKey && this.mouseIsDown) {
+                this.boardCenter.x = this.boardCenter.x + event.movementX * (Math.round(Math.sqrt(Math.pow(this.prevX - event.clientX, 2))/100));
+                this.boardCenter.y = this.boardCenter.y + event.movementY* (Math.round(Math.sqrt(Math.pow(this.prevY - event.clientY, 2))/100));
+                this.draw();
+            }
         })
     }
 
@@ -34,14 +59,9 @@ export class Board {
      * @param {number} w - width of the board
      * @param {number} h - height of the board
      * */
-    public draw(w: number, h: number): void {
-        this.canvas.width = w;
-        this.canvas.height = h;
-
-        this.boardCenter = {
-            x: w/2,
-            y: h/2
-        };
+    public draw(w?: number, h?: number): void {
+        this.canvas.width = w || window.innerWidth;
+        this.canvas.height = h || window.innerHeight;
 
         this.hexArray.length = 0;
 
