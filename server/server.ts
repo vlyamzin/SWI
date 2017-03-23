@@ -1,12 +1,15 @@
-import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
-import * as express from "express";
-import * as logger from "morgan";
-import * as path from "path";
-import errorHandler = require("errorhandler");
-import methodOverride = require("method-override");
+import * as WebSocket from 'ws';
 
 import { IndexRoute } from "./routes/index";
+
+interface App {
+    port: number
+}
+
+interface ISocketMessage {
+    command: string,
+    data: any
+}
 
 /**
  * The server.
@@ -15,28 +18,36 @@ import { IndexRoute } from "./routes/index";
  */
 export class Server {
 
-    public app: express.Application;
+    public app: App;
+    private webSocketServer: WebSocket.Server;
+    private router: any; // TODO
+    private allClients: Object = {};
+    private namedClients: Object = {};
 
     /**
      * Bootstrap the application.
      *
      * @class Server
      * @method bootstrap
+     * @param {number} port
      * @static
      * @return {Object} Returns the newly created injector for this app.
      */
-    public static bootstrap(): Server {
-        return new Server();
+    public static bootstrap(port: number): Server {
+        return new Server(port);
     }
 
     /**
      * Constructor.
      *
      * @class Server
+     * @param {number} port
      * @constructor
      */
-    constructor() {
-        this.app = express(); // create express js application
+    constructor(port: number) {
+        this.app = {
+            port
+        };
         this.config(); // configure application
         this.routes(); // add routes
         this.api(); // add api
@@ -59,30 +70,63 @@ export class Server {
      * @method config
      */
     public config() {
-        //add static paths
-        this.app.use(express.static(path.join(__dirname, "www")));
-
-        this.app.use(logger("dev")); // use logger middleware
-
-        this.app.use(bodyParser.json()); // use json form parser middleware
-
-        // use query string parser middleware
-        this.app.use(bodyParser.urlencoded({
-            extended: true
-        }));
-
-        this.app.use(cookieParser("SECRET_GOES_HERE")); // use cookie parser middleware
-
-        // use override middleware
-        this.app.use(methodOverride());
-
-        // catch 404 and forward to error handler
-        this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
-            err.status = 404;
-            next(err);
+        this.webSocketServer = new WebSocket.Server({
+            port: this.app.port
         });
 
-        this.app.use(errorHandler()); // error handling
+        this.webSocketServer.on('connection', (ws) => {
+            let id = Math.random();
+
+            this.allClients[id] = ws;
+
+            console.log("new connection " + id);
+
+            if (ws.readyState === ws.OPEN) {
+                const usersCount = Object.keys(this.namedClients).length;
+
+                if (usersCount < 2) {
+                    this.sendData(ws, {
+                        command: 'authorize'
+                    });
+                }
+                else {
+                    this.sendData(ws, {
+                        command: 'signed',
+                        data: {
+                            role: 'viewer'
+                        }
+                    });
+                }
+            }
+
+            ws.on('message', (data: string) => {
+                let message: ISocketMessage;
+
+                try {
+                    message = JSON.parse(data);
+                } catch(e) {
+                    console.log(e);
+                }
+                console.log('message received ' + message);
+
+                if (typeof message.command !== 'string') {
+                    return;
+                }
+
+                this.processRoute(message, ws, id);
+
+                // for(let key in allClients) {
+                //     console.log(key);
+                //     allClients[key].send(message);
+                // }
+            });
+
+            ws.on('close', () => {
+                console.log('connection is closed ' + id);
+                delete this.allClients[id];
+            });
+
+        });
     }
 
     /**
@@ -92,12 +136,48 @@ export class Server {
      * @method api
      */
     public routes() {
-        let router: express.Router;
+        // let router: express.Router;
+        //
+        // router = express.Router();
+        //
+        // IndexRoute.create(router);
 
-        router = express.Router();
+        // this.app.use(router); // use router middleware
+        this.router = {
+            'register': (ws, clientId, userName) => {
+                if (typeof this.namedClients[userName] === 'undefined') {
+                    this.namedClients[userName] = clientId;
 
-        IndexRoute.create(router);
+                    this.sendData(ws, {
+                        command: 'signed',
+                        data: {
+                            role: 'player'
+                        }
+                    });
+                } else {
+                    this.sendData(ws, {
+                        command: 'authorize'
+                    });
+                }
+            }
+        }
+    }
 
-        this.app.use(router); // use router middleware
+    private sendData(ws, data) {
+        ws.send(JSON.stringify(data));
+    }
+
+    private processRoute(socketMessage: ISocketMessage, ws, clientId: number) {
+        const method = this.router[socketMessage.command];
+
+        console.log(socketMessage, ws, clientId);
+
+        if (typeof method === 'function') {
+            method(ws, clientId, socketMessage.data);
+        } else {
+            this.sendData(ws, {
+                error: 'no such command'
+            });
+        }
     }
 }
