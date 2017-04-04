@@ -1,17 +1,25 @@
 import {IBoard, Board} from './gui/board';
+import {IImagePreloader, ImagePreloader} from './utils/imagePreloader';
+
+let imageList;
 
 module UI {
+
     class Game {
         private width: number;
         private height: number;
         private board: IBoard;
 
         constructor() {
+            imageList = new ImagePreloader(['./coruscant.png']);
             this.width = window.innerWidth;
             this.height = window.innerHeight;
 
-            this.board = new Board(this.width, this.height);
+
             window.addEventListener('resize', this.resizeCanvas.bind(this), false);
+            imageList.imageLoaded.then(() => {
+                this.board = new Board(this.width, this.height);
+            });
         }
 
         /**
@@ -25,4 +33,7 @@ module UI {
     }
 
     new Game();
+
+
 }
+export {imageList};     // it is singleton

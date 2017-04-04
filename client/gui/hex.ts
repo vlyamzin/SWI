@@ -1,4 +1,5 @@
 import {IMapCoord} from './map';
+import {imageList} from '../index';
 
 export interface IPoint {
     x: number
@@ -47,6 +48,9 @@ export class Hex {
         });
         canvas.closePath();
         canvas.stroke();
+
+        canvas.drawImage(imageList.imageCollection[0], this.corners[0].x, this.corners[0].y);
+
     }
 
     public findNeighborCenterCoords(curHex:IMapCoord, newHex: IMapCoord, oldCenter: IPoint): IPoint {
