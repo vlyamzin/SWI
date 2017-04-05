@@ -4,6 +4,7 @@ var runsequence = require('run-sequence');
 
 var paths = {
     pages: ['client/*.html'],
+    images: ['client/assets/img/*'],
     clientDest: 'bin/www',
     server: ['server/**/*.ts'],
     serverDest: 'bin'
@@ -12,6 +13,11 @@ var paths = {
 gulp.task('copy-html', function () {
     return gulp.src(paths.pages)
         .pipe(gulp.dest(paths.clientDest));
+});
+
+gulp.task('copy-image', () => {
+    return gulp.src(paths.images)
+        .pipe(gulp.dest(paths.clientDest + '/assets/img'))
 });
 
 var serverBuildIterator = 0;
