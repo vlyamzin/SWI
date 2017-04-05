@@ -4,7 +4,7 @@
   "description": "Twilight Imperium - Star Wars edition",
   "main": "index.js",
   "scripts": {
-    "start": "npm run client && npm run build-server && gulp copy-html && node ./bin/www.js",
+    "start": "npm run client && npm run build-server && gulp copy-html && gulp copy-image && node ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-server": "gulp build-server --no-emit",
     "watch-server-ts": "gulp watch-server",
