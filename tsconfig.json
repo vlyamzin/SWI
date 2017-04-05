@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true,
+    "lib": ["dom", "es2015"]
+  },
+  "types" : ["node", "lodash", "express", "body-parser", "cookie-parser", "errorhandler", "method-override", "morgan"],
+  "exclude": [
+    "node_modules"
+  ]
+}

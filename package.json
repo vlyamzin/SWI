@@ -1,0 +1,56 @@
+{
+  "name": "swi",
+  "version": "0.0.1",
+  "description": "Twilight Imperium - Star Wars edition",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run client && npm run build-server && gulp copy-html && gulp copy-image && node ./bin/www.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-server": "gulp build-server --no-emit",
+    "watch-server-ts": "gulp watch-server",
+    "nodemon-server": "npm run client && gulp copy-html && nodemon --watch bin ./bin/www.js",
+    "client": "./node_modules/.bin/webpack --config ./webpack.config.js",
+    "client-watch": "./node_modules/.bin/webpack --watch --config ./webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vlyamzin/SWI.git"
+  },
+  "author": "Vlad Lyamzin, Peter Momot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vlyamzin/SWI/issues"
+  },
+  "homepage": "https://github.com/vlyamzin/SWI#readme",
+  "devDependencies": {
+    "@types/body-parser": "^1.16.0",
+    "@types/cookie-parser": "^1.3.30",
+    "@types/errorhandler": "0.0.30",
+    "@types/express": "^4.0.35",
+    "@types/lodash": "^4.14.55",
+    "@types/method-override": "0.0.29",
+    "@types/morgan": "^1.7.32",
+    "@types/node": "^7.0.8",
+    "body-parser": "1.17.1",
+    "cookie-parser": "1.4.3",
+    "debug": "2.6.3",
+    "errorhandler": "1.5.0",
+    "express": "4.15.2",
+    "gulp": "3.9.1",
+    "gulp-typescript": "3.1.5",
+    "lodash": "4.17.4",
+    "method-override": "2.3.7",
+    "morgan": "1.8.1",
+    "nodemon": "1.11.0",
+    "pre-commit": "1.2.2",
+    "run-sequence": "1.2.2",
+    "source-map-loader": "0.2.0",
+    "ts-loader": "2.0.2",
+    "typescript": "2.2.1",
+    "webpack": "2.2.1"
+  },
+  "pre-commit": [
+    "build-server",
+    "client"
+  ]
+}
