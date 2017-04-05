@@ -1,7 +1,7 @@
 var path = require("path");
 
 module.exports = {
-    entry: path.join(__dirname, 'client/gui/index.ts'),
+    entry: path.join(__dirname, 'client/index.ts'),
     output: {
         path: path.join(__dirname, 'bin/www'),
         filename: 'bundle.js'
@@ -28,9 +28,6 @@ module.exports = {
                 use: "source-map-loader"
             }
         ]
-    },
-    devServer: {
-        port: 8081
     },
     devtool: 'inline-source-map'
 };
