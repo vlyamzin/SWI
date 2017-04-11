@@ -1,5 +1,6 @@
 import {IMapCoord} from './map';
-import {imageList} from '../index';
+
+import {ITileImage} from "./tileImages";
 
 export interface IPoint {
     x: number
@@ -17,7 +18,7 @@ export class Hex {
     private shiftX: number;
     private shiftY: number;
 
-    constructor(protected center: IPoint, protected size, protected mapCoords: IMapCoord){
+    constructor(protected center: IPoint, protected size, protected mapCoords: IMapCoord, protected tile: ITileImage){
         this.shiftX = size * 2 * 3/4;
         this.shiftY = Math.sqrt(3)/2 * size;
 
@@ -37,6 +38,9 @@ export class Hex {
     }
 
     public drawHex(canvas: CanvasRenderingContext2D): void {
+
+        canvas.drawImage(this.tile.image, this.corners[3].x, this.corners[4].y, this.size*2, this.size*1.734375);
+
         canvas.strokeStyle = '#fff';
         canvas.beginPath();
         this.corners.forEach((corner: IPoint, index: number) => {
@@ -49,7 +53,7 @@ export class Hex {
         canvas.closePath();
         canvas.stroke();
 
-        canvas.drawImage(imageList.imageCollection[0], this.corners[0].x, this.corners[0].y);
+
 
     }
 

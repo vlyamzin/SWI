@@ -1,5 +1,6 @@
 import {Hex, IPoint} from "./hex"
 import {GameMap, IMapCoord} from "./map"
+import {imageList} from '../index';
 import * as lodash from "lodash";
 
 
@@ -69,9 +70,10 @@ export class Board {
         
         for (let i = 0, lenCol = GameMap.sixMemberMap.length; i < lenCol; i += 1) {
             for (let j = 0, lenRow = GameMap.sixMemberMap[i].length; j < lenRow; j += 1) {
+                let index = Math.floor(Math.random() * (35 - 1) + 1); // temp solution
                 // hex in the center
                 if (i === 0) {
-                    hex = new Hex(this.boardCenter, this.hexSize, GameMap.sixMemberMap[i][j]);
+                    hex = new Hex(this.boardCenter, this.hexSize, GameMap.sixMemberMap[i][j], imageList.imageCollection[0]);
                     this.hexArray.push(hex);
                 } else {
                     // new ring of hexes
@@ -82,12 +84,12 @@ export class Board {
                         });
 
                         let newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
-                        hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
+                        hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j], imageList.imageCollection[index]);
                         this.hexArray.push(hex);
                     } else {
                         // hexes in the same ring
                         let newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
-                        hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
+                        hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j], imageList.imageCollection[index]);
                         this.hexArray.push(hex);
                     }
                 } 

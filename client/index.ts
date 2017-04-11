@@ -1,5 +1,6 @@
 import {IBoard, Board} from './gui/board';
 import {IImagePreloader, ImagePreloader} from './utils/imagePreloader';
+import {TileImages, ITileImage} from './gui/tileImages';
 
 let imageList;
 
@@ -11,7 +12,7 @@ module UI {
         private board: IBoard;
 
         constructor() {
-            imageList = new ImagePreloader(['./coruscant.png']);
+            imageList = new ImagePreloader<ITileImage>(TileImages.tiles);
             this.width = window.innerWidth;
             this.height = window.innerHeight;
 
