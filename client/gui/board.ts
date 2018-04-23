@@ -52,13 +52,20 @@ export class Board {
                 this.boardCenter.y = this.boardCenter.y + event.movementY* (Math.round(Math.sqrt(Math.pow(this.prevY - event.clientY, 2))/100));
                 this.draw();
             }
-        })
+        });
+
+        this.canvas.addEventListener('DOMMouseScroll', this.zoom.bind(this),false);
+        this.canvas.addEventListener('mousewheel', this.zoom.bind(this),false);
     }
 
     /**
      * Draw main game board
+     *
+     * @class Board
+     * @method draw
      * @param {number} w - width of the board
      * @param {number} h - height of the board
+     * @public
      * */
     public draw(w?: number, h?: number): void {
         this.canvas.width = w || window.innerWidth;
@@ -102,11 +109,41 @@ export class Board {
     /**
      * Transform pixel to the MapCoord object
      * Used to retrieve Hex by coord
+     *
+     * @class Board
+     * @method pixelToHex
+     * @param {Number} a - X coord of pixel
+     * @param {Number} b - Y coord of pixel
+     * @public
+     * @return IMapCoord
      * */
-    public pixelToHex(a, b) {
+    public pixelToHex(a: number, b: number): IMapCoord {
         let _a = a * 2/3 / this.hexSize,
             _b = (-a/3 + Math.sqrt(3)/3 * b) / this.hexSize;
 
         return Hex.hexRound(<IMapCoord>{a: _a, b: _b});
+    }
+
+    /**
+     * Listen for Shift+Mouse Wheel event and change hex size
+     *
+     * @class Board
+     * @method zoom
+     * @param {WheelEvent} event - Mouse wheel event
+     * @private
+     * */
+    private zoom(event: WheelEvent): void {
+        if (event.shiftKey) {
+            /**
+             * zoom in/zoom out
+             * */
+            if (event.wheelDelta > 0) {
+                this.hexSize = this.hexSize * 1.12;
+            } else {
+                this.hexSize = this.hexSize / 1.12;
+            }
+
+            this.draw();
+        }
     }
 }
