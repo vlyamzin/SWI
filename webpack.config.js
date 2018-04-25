@@ -25,9 +25,15 @@ module.exports = {
             {
                 enforce: 'pre',
                 test: /\.tsx?$/,
-                use: "source-map-loader"
+                use: "source-map-loader",
+                exclude: [/node_modules/]
+            },
+            {
+                test:/\.(s*)css$/,
+                use:['style-loader','css-loader', 'sass-loader']
             }
         ]
     },
-    devtool: 'inline-source-map'
+    devtool: 'inline-source-map',
+    mode: "development"
 };

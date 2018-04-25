@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2016",
     "sourceMap": true,
-    "lib": ["dom", "es2015"]
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es2015"],
+    "jsx": "react",
+    "jsxFactory": "elements.createElement"
   },
   "types" : ["node", "lodash", "express", "body-parser", "cookie-parser", "errorhandler", "method-override", "morgan"],
   "exclude": [

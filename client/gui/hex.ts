@@ -1,4 +1,4 @@
-import {IMapCoord} from './map';
+import {IMapCoord} from '../logic/map';
 
 import {ITileImage} from "./tileImages";
 

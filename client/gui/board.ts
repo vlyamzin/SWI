@@ -1,5 +1,5 @@
 import {Hex, IPoint} from "./hex"
-import {GameMap, IMapCoord} from "./map"
+import {GameMap, IMapCoord} from "../logic/map"
 import {imageList} from '../index';
 import * as lodash from "lodash";
 

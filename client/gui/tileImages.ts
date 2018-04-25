@@ -1,4 +1,4 @@
-import {TileTypeEnum} from '../common/enums';
+import {TileTypeEnum} from '../common/enums/tile-type.enum';
 
 export interface ITileImage {
     id: number,
@@ -37,7 +37,7 @@ export class TileImages {
             {
                 id: 4,
                 src: TileImages.basePath + 'bothawui_kothlis.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -49,7 +49,7 @@ export class TileImages {
             {
                 id: 6,
                 src: TileImages.basePath + 'dantooine_telos4.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -85,13 +85,13 @@ export class TileImages {
             {
                 id: 12,
                 src: TileImages.basePath + 'kashyyyk.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
                 id: 13,
                 src: TileImages.basePath + 'korriban_ziost.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -103,7 +103,7 @@ export class TileImages {
             {
                 id: 15,
                 src: TileImages.basePath + 'lyarna.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -115,7 +115,7 @@ export class TileImages {
             {
                 id: 17,
                 src: TileImages.basePath + 'mon_calamari.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -139,7 +139,7 @@ export class TileImages {
             {
                 id: 21,
                 src: TileImages.basePath + 'neimoidia_cato_deko.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -151,7 +151,7 @@ export class TileImages {
             {
                 id: 23,
                 src: TileImages.basePath + 'raxusprime_geonosis.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
@@ -199,7 +199,7 @@ export class TileImages {
             {
                 id: 30,
                 src: TileImages.basePath + 'tatooine_adriana.png',
-                type: TileTypeEnum.Planet,
+                type: TileTypeEnum.Race,
                 image: null
             },
             {
