@@ -2,12 +2,19 @@ import {Service} from 'typedi';
 import {races} from '../logic/models/races';
 import {colors} from '../logic/models/colors';
 import * as elements from 'typed-html';
-import {Template} from '../utils/template';
+import {IViewEvents, Template} from '../utils/template';
 
 
 
 @Service()
 export class Login {
+    private readonly events: IViewEvents;
+
+    constructor() {
+        this.events = {
+            '.submit': [{'click': 'submitPlayer'}]
+        }
+    }
 
     public render() {
         const container = <div class={'login-form'}>
@@ -25,16 +32,18 @@ export class Login {
                     return <option value={i[0].toString()}>{i[1]}</option>
                 })}
             </select>
-            <button class={'submit'} onclick="window.alert('A')">Go</button>
+            <button class={'submit'}>Go</button>
         </div>;
 
         const parent = document.getElementById('login');
         Template.renderElement(container, parent);
+        Template.attachEvents(this.events, this);
 
         return this;
     }
 
-    public submitPlayer(): void {
-        console.log('submit');
+    public submitPlayer(e: Event): void {
+        console.log(e);
+        debugger;
     }
 }
