@@ -1,0 +1,17 @@
+#hud {
+    overflow: hidden;
+    width: 100vw;
+    height: 300px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(0, 111, 111);
+
+    .main {
+        overflow: auto;
+        height: 315px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}

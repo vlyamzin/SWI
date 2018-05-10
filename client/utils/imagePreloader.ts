@@ -1,17 +1,22 @@
-export interface IImagePreloader {
-    imageLoaded: Promise<any>
-    imageCollection: Array<HTMLImageElement>
+interface IImage {
+    src: string,
+    image: HTMLImageElement
 }
 
-export class ImagePreloader implements IImagePreloader{
-    private imageList: Array<HTMLImageElement>;
+export interface IImagePreloader {
+    imageLoaded: Promise<any>
+    imageCollection: Array<IImage>
+}
+
+export class ImagePreloader<T extends IImage> implements IImagePreloader{
+    private imageList: Array<T>;
     private promiseList: Array<Promise<any>>;
 
-    constructor(protected srcList: Array<string>) {
+    constructor(protected srcList: Array<T>) {
         this.imageList = [];
         this.promiseList = [];
 
-        srcList.forEach((src:string) => {
+        srcList.forEach((i:T) => {
             const img = new Image();
             const promise = new Promise<void>((resolve, reject) => {
                 img.onload = () => {
@@ -22,8 +27,9 @@ export class ImagePreloader implements IImagePreloader{
                 }
             });
             
-            img.src = src;
-            this.imageList.push(img);
+            img.src = i.src;
+            i.image = img;
+            this.imageList.push(i);
             this.promiseList.push(promise);
         });
     }
@@ -32,7 +38,7 @@ export class ImagePreloader implements IImagePreloader{
         return Promise.all(this.promiseList);
     }
 
-    get imageCollection(): Array<HTMLImageElement> {
+    get imageCollection(): Array<T> {
         return this.imageList;
     }
 }

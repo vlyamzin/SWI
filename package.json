@@ -31,26 +31,42 @@
     "@types/method-override": "0.0.29",
     "@types/morgan": "^1.7.32",
     "@types/node": "^7.0.8",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "awesome-typescript-loader": "3.5.0",
     "body-parser": "1.17.1",
     "cookie-parser": "1.4.3",
+    "css-loader": "^0.28.11",
     "debug": "2.6.3",
     "errorhandler": "1.5.0",
     "express": "4.15.2",
     "gulp": "3.9.1",
     "gulp-typescript": "3.1.5",
-    "lodash": "4.17.4",
+    "lodash": "4.17.5",
     "method-override": "2.3.7",
     "morgan": "1.8.1",
+    "node-sass": "^4.8.3",
     "nodemon": "1.11.0",
     "pre-commit": "1.2.2",
     "run-sequence": "1.2.2",
+    "sass-loader": "^7.0.1",
     "source-map-loader": "0.2.0",
-    "ts-loader": "2.0.2",
-    "typescript": "2.2.1",
-    "webpack": "2.2.1"
+    "style-loader": "^0.21.0",
+    "ts-loader": "4.2.0",
+    "typescript": "2.8.3",
+    "webpack": "3.10.0"
   },
   "pre-commit": [
     "build-server",
     "client"
-  ]
+  ],
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^5.5.10",
+    "typed-html": "^0.6.0",
+    "typedi": "^0.7.2"
+  }
 }

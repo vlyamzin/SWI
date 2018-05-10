@@ -1,0 +1,16 @@
+.hud-tiles-card {
+    width: 200px;
+    height: 250px;
+    background-position: center center;
+    -webkit-background-size: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+
+    &:hover {
+        z-index: 1000;
+    }
+
+    &.sorted {
+        transform: translateX(0) !important;
+    }
+}
