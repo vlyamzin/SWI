@@ -31,6 +31,9 @@
     "@types/method-override": "0.0.29",
     "@types/morgan": "^1.7.32",
     "@types/node": "^7.0.8",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "awesome-typescript-loader": "3.5.0",
     "body-parser": "1.17.1",
     "cookie-parser": "1.4.3",
     "css-loader": "^0.28.11",
@@ -51,14 +54,16 @@
     "style-loader": "^0.21.0",
     "ts-loader": "4.2.0",
     "typescript": "2.8.3",
-    "webpack": "4.6.0",
-    "webpack-cli": "^2.0.15"
+    "webpack": "3.10.0"
   },
   "pre-commit": [
     "build-server",
     "client"
   ],
   "dependencies": {
+    "classnames": "^2.2.5",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.10",
     "typed-html": "^0.6.0",

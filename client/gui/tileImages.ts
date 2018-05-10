@@ -1,11 +1,17 @@
 import {TileTypeEnum} from '../common/enums/tile-type.enum';
+import {RacesEnum} from '../common/enums/races.enum';
 
 export interface ITileImage {
     id: number,
     src: string,
     type: TileTypeEnum,
-    image: HTMLImageElement
+    image: HTMLImageElement,
+    raceId?: RacesEnum
 }
+/**
+ * @class TileImages
+ * @classdesc A list of available tiles with paths to image files
+ * */
 export class TileImages {
     private static basePath = './assets/img/';
     public static get tiles(): Array<ITileImage> {
@@ -38,7 +44,8 @@ export class TileImages {
                 id: 4,
                 src: TileImages.basePath + 'bothawui_kothlis.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.BothanSpyNetwork
             },
             {
                 id: 5,
@@ -50,7 +57,8 @@ export class TileImages {
                 id: 6,
                 src: TileImages.basePath + 'dantooine_telos4.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.JediCouncils
             },
             {
                 id: 7,
@@ -86,13 +94,15 @@ export class TileImages {
                 id: 12,
                 src: TileImages.basePath + 'kashyyyk.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.Wookiees
             },
             {
                 id: 13,
                 src: TileImages.basePath + 'korriban_ziost.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.SithOrder
             },
             {
                 id: 14,
@@ -104,7 +114,8 @@ export class TileImages {
                 id: 15,
                 src: TileImages.basePath + 'lyarna.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.BountyHuntersGuild
             },
             {
                 id: 16,
@@ -116,7 +127,8 @@ export class TileImages {
                 id: 17,
                 src: TileImages.basePath + 'mon_calamari.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.MonCalamari
             },
             {
                 id: 18,
@@ -140,7 +152,8 @@ export class TileImages {
                 id: 21,
                 src: TileImages.basePath + 'neimoidia_cato_deko.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.TradeFederation
             },
             {
                 id: 22,
@@ -152,7 +165,8 @@ export class TileImages {
                 id: 23,
                 src: TileImages.basePath + 'raxusprime_geonosis.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.CIS
             },
             {
                 id: 24,
@@ -200,7 +214,8 @@ export class TileImages {
                 id: 30,
                 src: TileImages.basePath + 'tatooine_adriana.png',
                 type: TileTypeEnum.Race,
-                image: null
+                image: null,
+                raceId: RacesEnum.JawaClans
             },
             {
                 id: 31,

@@ -13,12 +13,20 @@ export interface ICube {
     y: number
 }
 
+/**
+ * @class Hex
+ * @classdesc The Hex object. Part of the map.
+ * */
 export class Hex {
     private corners: Array<IPoint> = [];
     private readonly shiftX: number;
     private readonly shiftY: number;
 
-    constructor(private center: IPoint, private size, private mapCoords: IMapCoord, private tile: ITileImage){
+    constructor(private center: IPoint,
+                private size,
+                private mapCoords: IMapCoord,
+                private tile?: ITileImage,
+                private highlight?: boolean) {
         this.shiftX = size * 2 * 3/4;
         this.shiftY = Math.sqrt(3)/2 * size;
 
@@ -36,9 +44,11 @@ export class Hex {
      * @public
      * */
     public drawHex(canvas: CanvasRenderingContext2D): void {
-        canvas.drawImage(this.tile.image, this.corners[3].x, this.corners[4].y, this.size*2, this.size*1.734375);
+        if (this.tile) {
+            canvas.drawImage(this.tile.image, this.corners[3].x, this.corners[4].y, this.size*2, this.size*1.734375);
+        }
 
-        canvas.strokeStyle = '#fff';
+        canvas.strokeStyle = this.highlight ? '#ff0' : '#fff';
         canvas.beginPath();
         this.corners.forEach((corner: IPoint, index: number) => {
             if (index === 0) {

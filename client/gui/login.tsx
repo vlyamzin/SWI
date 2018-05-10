@@ -1,49 +1,118 @@
-import {Service} from 'typedi';
 import {races} from '../logic/models/races';
 import {colors} from '../logic/models/colors';
-import * as elements from 'typed-html';
-import {IViewEvents, Template} from '../utils/template';
+import * as React from 'react';
+import {PlayerColorsEnum} from '../common/enums/player-colors.enum';
+import {RacesEnum} from '../common/enums/races.enum';
+import {Container} from 'typedi';
+import {PlayerService} from '../logic/services/player.service';
+import {GameState} from '../logic/game-state';
 
+interface ILoginState {
+    user: string,
+    color: string,
+    race: RacesEnum
+}
 
+/**
+ * @class
+ * @classdesc The login component. Manage creation and signing-in processes of the player.
+ * */
+export class Login extends React.Component<{}, ILoginState>{
+    private ps: PlayerService;
+    private gs: GameState;
 
-@Service()
-export class Login {
-    private readonly events: IViewEvents;
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: '',
+            color: colors.get(PlayerColorsEnum.Red).hash,
+            race: RacesEnum.Wookiees
+        };
 
-    constructor() {
-        this.events = {
-            '.submit': [{'click': 'submitPlayer'}]
-        }
+        this.ps = Container.get(PlayerService);
+        this.gs = Container.get(GameState);
     }
 
+    /**
+     * Render React component
+     *
+     * @class Login
+     * @method render
+     * @public
+     * */
     public render() {
-        const container = <div class={'login-form'}>
-            <label for="name">Name</label>
-            <input type="text" id={'name'}></input>
-            <label for="color">Color</label>
-            <select name="color" id="color">
+        const container = <div className={'login-form'}>
+            <label htmlFor="name">Name</label>
+            <input type="text" id={'name'} value={this.state.user} onChange={e => this.onNameChanged(e)}/>
+            <label htmlFor="color">Color</label>
+            <select name="color" id="color" onChange={e => this.onColorChanged(e)} value={this.state.color}>
                 {[...colors.values()].map((i) => {
-                    return <option value={i.hash}>{i.name}</option>
+                    return <option key={i.hash} value={i.hash}>{i.name}</option>
                 })}
             </select>
-            <label for="race">Race</label>
-            <select name="color" id="color">
+            <label htmlFor="race">Race</label>
+            <select name="color" id="color" onChange={e => this.onRaceChanged(e)} value={this.state.race}>
                 {[...races.entries()].map((i) => {
-                    return <option value={i[0].toString()}>{i[1]}</option>
+                    return <option key={i[0]} value={i[0].toString()}>{i[1]}</option>
                 })}
             </select>
-            <button class={'submit'}>Go</button>
+            <button className={'submit'} onClick={this.submitPlayer.bind(this)}>Go</button>
         </div>;
 
-        const parent = document.getElementById('login');
-        Template.renderElement(container, parent);
-        Template.attachEvents(this.events, this);
-
-        return this;
+        return container;
     }
 
-    public submitPlayer(e: Event): void {
-        console.log(e);
-        debugger;
+    /**
+     * Name input event listener
+     *
+     * @class Login
+     * @method onNameChanged
+     * @param event – DOM event
+     * @private
+     * */
+    private onNameChanged(event): void {
+        this.setState({user: event.target.value});
+    }
+
+    /**
+     * Color input event listener
+     *
+     * @class Login
+     * @method onColorChanged
+     * @param event – DOM event
+     * @private
+     * */
+    private onColorChanged(event): void {
+        this.setState({color: event.target.value});
+    }
+
+    /**
+     * Race input event listener
+     *
+     * @class Login
+     * @method onRaceChanged
+     * @param event – DOM event
+     * @private
+     * */
+    private onRaceChanged(event): void {
+        this.setState({race: event.target.value});
+    }
+
+    /**
+     * Submit button event listener
+     *
+     * @class Login
+     * @method submitPlayer
+     * @private
+     * */
+    private submitPlayer(): void {
+        const {user, color, race} = this.state;
+        this.ps.create({
+            name: user,
+            color: color,
+            race: race
+        }).then(() => {
+            this.gs.createMap();
+        });
     }
 }

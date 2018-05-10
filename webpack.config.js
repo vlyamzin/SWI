@@ -1,7 +1,7 @@
 var path = require("path");
 
 module.exports = {
-    entry: path.join(__dirname, 'client/index.ts'),
+    entry: path.join(__dirname, 'client/index.tsx'),
     output: {
         path: path.join(__dirname, 'bin/www'),
         filename: 'bundle.js'
@@ -14,7 +14,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'ts-loader',
+                loader: 'awesome-typescript-loader',
                 exclude: /node_modules/
             },
             {
@@ -34,6 +34,5 @@ module.exports = {
             }
         ]
     },
-    devtool: 'inline-source-map',
-    mode: "development"
+    devtool: 'inline-source-map'
 };

@@ -6,8 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["dom", "es2015"],
-    "jsx": "react",
-    "jsxFactory": "elements.createElement"
+    "jsx": "react"
   },
   "types" : ["node", "lodash", "express", "body-parser", "cookie-parser", "errorhandler", "method-override", "morgan"],
   "exclude": [
