@@ -17,6 +17,9 @@ If your target is client side, then run:
 And in any moment you wish to update bundle.js, run:
 > npm run client
 
+Or in case if you need hot reload:
+> nom run client-watch
+
 ### Pre Commit Hooks
 
 You will not be able to commit your code in case of typescript errors.

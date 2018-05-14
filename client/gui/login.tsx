@@ -14,6 +14,7 @@ interface ILoginState {
 }
 
 /**
+ * @ TODO Move it to client/login.tsx component
  * @class
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */

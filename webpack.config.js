@@ -1,10 +1,13 @@
 var path = require("path");
 
 module.exports = {
-    entry: path.join(__dirname, 'client/index.tsx'),
+    entry: {
+        main: path.join(__dirname, 'client/index.tsx'),
+        login: path.join(__dirname, 'client/login.tsx')
+    },
     output: {
         path: path.join(__dirname, 'bin/www'),
-        filename: 'bundle.js'
+        filename: '[name]-bundle.js'
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.

@@ -54,14 +54,19 @@
     "style-loader": "^0.21.0",
     "ts-loader": "4.2.0",
     "typescript": "2.8.3",
-    "webpack": "3.10.0"
+    "webpack": "3.10.0",
+    "ws": "^2.2.1"
   },
   "pre-commit": [
     "build-server",
     "client"
   ],
   "dependencies": {
+    "@types/nano": "^6.4.5",
+    "bluebird": "^3.5.1",
     "classnames": "^2.2.5",
+    "nano": "^6.4.3",
+    "node-static": "^0.7.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "reflect-metadata": "^0.1.12",

@@ -8,7 +8,7 @@
     "lib": ["dom", "es2015"],
     "jsx": "react"
   },
-  "types" : ["node", "lodash", "express", "body-parser", "cookie-parser", "errorhandler", "method-override", "morgan"],
+  "types" : ["express", "lodash", "node", "ws"],
   "exclude": [
     "node_modules"
   ]

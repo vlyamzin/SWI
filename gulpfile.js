@@ -52,9 +52,9 @@ gulp.task('server-ts', function () {
 /**
  * Copy www.js file for server start into paths.serverDest
  * */
-gulp.task('copy-www', function () {
+gulp.task('copy-constants', function () {
     gulp
-        .src('server/www.js')
+        .src('server/constants.json')
         .pipe(gulp.dest(paths.serverDest));
 });
 
@@ -62,7 +62,7 @@ gulp.task('copy-www', function () {
  * Build server side
  * */
 gulp.task('build-server', () => {
-    return runsequence('copy-www', 'server-ts');
+    return runsequence('copy-constants', 'server-ts');
 });
 
 /**
