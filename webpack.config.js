@@ -1,10 +1,13 @@
 var path = require("path");
 
 module.exports = {
-    entry: path.join(__dirname, 'client/gui/index.ts'),
+    entry: {
+        main: path.join(__dirname, 'client/index.tsx'),
+        login: path.join(__dirname, 'client/login.tsx')
+    },
     output: {
         path: path.join(__dirname, 'bin/www'),
-        filename: 'bundle.js'
+        filename: '[name]-bundle.js'
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -14,7 +17,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'ts-loader',
+                loader: 'awesome-typescript-loader',
                 exclude: /node_modules/
             },
             {
@@ -25,12 +28,14 @@ module.exports = {
             {
                 enforce: 'pre',
                 test: /\.tsx?$/,
-                use: "source-map-loader"
+                use: "source-map-loader",
+                exclude: [/node_modules/]
+            },
+            {
+                test:/\.(s*)css$/,
+                use:['style-loader','css-loader', 'sass-loader']
             }
         ]
-    },
-    devServer: {
-        port: 8081
     },
     devtool: 'inline-source-map'
 };

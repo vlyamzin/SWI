@@ -70,6 +70,7 @@ export class Server {
      * @method config
      */
     public config() {
+        console.log('Starting Web Socket server');
         this.webSocketServer = new WebSocket.Server({
             port: this.app.port
         });
@@ -109,7 +110,7 @@ export class Server {
                 }
                 console.log('message received ' + message);
 
-                if (typeof message.command !== 'string') {
+                if (!message || !message.command || typeof message.command !== 'string') {
                     return;
                 }
 

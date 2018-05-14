@@ -6,7 +6,7 @@ import { BaseRoute } from "./route";
  *
  * @class IndexRoute
  */
-export class IndexRoute extends BaseRoute {
+export class LoginRoute extends BaseRoute {
 
     /**
      * Create the routes.
@@ -15,18 +15,13 @@ export class IndexRoute extends BaseRoute {
      * @method create
      * @static
      */
-    public static create(router: Router) {
+    public static create(router: Router, pathToView?: string) {
         //log
-        console.log("[IndexRoute::create] Creating index route.");
+        console.log("[LoginRoute::create] Creating login route.");
 
-        //add home page route
-        router.get("/", (req: Request, res: Response, next: NextFunction) => {
-            new IndexRoute().index(req, res, next);
+        router.get("/login", (req: Request, res: Response, next: NextFunction) => {
+            new LoginRoute().index(req, res, next, pathToView);
         });
-
-        return new Promise((resolve) => {
-            resolve();
-        })
     }
 
     /**
@@ -47,9 +42,10 @@ export class IndexRoute extends BaseRoute {
      * @param req {Request} The express Request object.
      * @param res {Response} The express Response object.
      * @param next {NextFunction} NextFunction object.
+     * @param pathToView {string} Physical location on the file
      * @next {NextFunction} Execute the next method.
      */
-    public index(req: Request, res: Response, next: NextFunction) {
-        this.render(req, res, "index.html");
+    public index(req: Request, res: Response, next: NextFunction, pathToView?: string) {
+        this.render(req, res, `${pathToView}/login.html`);
     }
 }

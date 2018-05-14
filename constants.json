@@ -1,0 +1,7 @@
+{
+  "dbUrl": "http://10.10.4.74",
+  "dbPort": "5984",
+  "appUrl": "http://localhost",
+  "appPortHttp": "8080",
+  "appPortWS": "9000"
+}
