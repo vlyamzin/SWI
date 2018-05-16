@@ -92,6 +92,9 @@ export class StaticServer {
                 .then((data) => {
                     res.send(data)
                 })
+                .catch(() => {
+                    res.status(500).send('Game list is not defined')
+                })
         })
     }
 }

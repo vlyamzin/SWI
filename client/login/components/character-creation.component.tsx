@@ -1,26 +1,20 @@
-import {races} from '../logic/models/races';
-import {colors} from '../logic/models/colors';
+import {races} from '../../logic/models/races';
+import {colors} from '../../logic/models/colors';
 import * as React from 'react';
-import {PlayerColorsEnum} from '../common/enums/player-colors.enum';
-import {RacesEnum} from '../common/enums/races.enum';
-import {Container} from 'typedi';
-import {PlayerService} from '../logic/services/player.service';
-import {GameState} from '../logic/game-state';
+import {PlayerColorsEnum} from '../../common/enums/player-colors.enum';
+import {RacesEnum} from '../../common/enums/races.enum';
 
-interface ILoginState {
+interface CharacterCreationState {
     user: string,
     color: string,
     race: RacesEnum
 }
 
 /**
- * @ TODO Move it to client/login.tsx component
- * @class
+ * @class PlayerLogin
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */
-export class Login extends React.Component<{}, ILoginState>{
-    private ps: PlayerService;
-    private gs: GameState;
+export class CharacterCreation extends React.Component<{}, CharacterCreationState>{
 
     constructor(props) {
         super(props);
@@ -29,15 +23,12 @@ export class Login extends React.Component<{}, ILoginState>{
             color: colors.get(PlayerColorsEnum.Red).hash,
             race: RacesEnum.Wookiees
         };
-
-        this.ps = Container.get(PlayerService);
-        this.gs = Container.get(GameState);
     }
 
     /**
      * Render React component
      *
-     * @class Login
+     * @class PlayerLogin
      * @method render
      * @public
      * */
@@ -66,7 +57,7 @@ export class Login extends React.Component<{}, ILoginState>{
     /**
      * Name input event listener
      *
-     * @class Login
+     * @class PlayerLogin
      * @method onNameChanged
      * @param event – DOM event
      * @private
@@ -78,7 +69,7 @@ export class Login extends React.Component<{}, ILoginState>{
     /**
      * Color input event listener
      *
-     * @class Login
+     * @class PlayerLogin
      * @method onColorChanged
      * @param event – DOM event
      * @private
@@ -90,7 +81,7 @@ export class Login extends React.Component<{}, ILoginState>{
     /**
      * Race input event listener
      *
-     * @class Login
+     * @class PlayerLogin
      * @method onRaceChanged
      * @param event – DOM event
      * @private
@@ -102,18 +93,11 @@ export class Login extends React.Component<{}, ILoginState>{
     /**
      * Submit button event listener
      *
-     * @class Login
+     * @class PlayerLogin
      * @method submitPlayer
      * @private
      * */
     private submitPlayer(): void {
         const {user, color, race} = this.state;
-        this.ps.create({
-            name: user,
-            color: color,
-            race: race
-        }).then(() => {
-            this.gs.createMap();
-        });
     }
 }

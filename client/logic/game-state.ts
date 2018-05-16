@@ -21,7 +21,7 @@ export class GameState implements IGameState {
     public state$: Observable<GameStateEnum>;
 
     constructor() {
-        this.state = new BehaviorSubject<GameStateEnum>(GameStateEnum.BOOTSTRAP);
+        this.state = new BehaviorSubject<GameStateEnum>(GameStateEnum.MAP_CREATION);
         this.state$ = this.state.asObservable();
     }
 

@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {IBoard, Board} from './gui/board';
 import {ImagePreloader} from './utils/imagePreloader';
 import {TileImages, ITileImage} from './gui/tileImages';
@@ -6,7 +5,6 @@ import {MainHUD} from './gui/hud/main-hud';
 import './assets/styles/main.scss'
 import {GameState, IGameStateListener} from './logic/game-state';
 import {Container} from 'typedi';
-import {Login} from './gui/login';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {GameStateEnum} from './common/enums/game-state.enum';
@@ -48,16 +46,6 @@ module UI {
                         case GameStateEnum.BOOTSTRAP:
                             /*@TODO show loading screen here */
                             console.log('Game is starting');
-                            break;
-                        case GameStateEnum.PLAYER_CREATION:
-                            if (this.ps.player) {
-                                this.state.createMap();
-                            } else {
-                                ReactDOM.render(
-                                    <Login/>,
-                                    loginView
-                                );
-                            }
                             break;
                         case GameStateEnum.MAP_CREATION:
                             loginView.classList.add('hidden');

@@ -1,11 +1,12 @@
-import {ServerScope} from 'nano';
+import {Connection} from 'mongoose';
+import {game} from './models/game';
 
-const nano = require('nano')
+const mongoose = require('mongoose')
     , constants = require('../constants.json');
 
 
 class Db {
-    private readonly _instance: ServerScope;
+    private _instance: Connection;
 
     /**
      * Bootstrap the database connector
@@ -21,7 +22,12 @@ class Db {
     }
 
     constructor() {
-        this._instance = nano(constants.dbUrl + ':' + constants.dbPort);
+        this._instance = mongoose.connect(`mongodb://${constants.dbUserName}:${constants.dbUserPwd}@${constants.dbUrl}`)
+            .then((res) => {
+                console.log("Db connected");
+                this._instance = res.connection;
+            });
+
         if (this._instance) {
             console.log(`CouchDB is connected and running under ${constants.dbUrl}:${constants.dbPort}`);
         }
@@ -35,24 +41,16 @@ class Db {
      * @public
      * @return {Promise}
      * */
-    public getGamesList(): Promise<string[]> {
-        return new Promise((resolve, reject) => {
-            this._instance.db.list((err, body) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                /*
-                * remove CouchDB internal objects
-                * */
-                const result = body.filter((name) => {
-                    return name[0] !== '_';
+    public getGamesList(): Promise<any> {
+        return game.find({}, 'name')
+            .then((data) => {
+                return data.map((item) => {
+                    return item.name;
                 });
-
-                resolve(result);
-            });
-        })
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 }
 

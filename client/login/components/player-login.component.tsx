@@ -1,0 +1,122 @@
+import * as React from 'react';
+import * as constants from '../../../constants.json';
+
+export interface PlayerLoginProps {
+    onUserSubmit: Function
+}
+
+interface PlayerLoginState {
+    signUp: boolean,
+    restore: boolean,
+    email: string,
+    password: string
+}
+
+export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginState> {
+    private apiHost: string;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            signUp: false,
+            restore: false,
+            email: '',
+            password: ''
+        };
+        this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
+    }
+
+    render() {
+        return <div>
+            <h3>Log under your account or create new one</h3>
+            {this.getForm()}
+        </div>
+    }
+
+    private getForm(): JSX.Element | string {
+        if (this.state.signUp) {
+            return <div className={'login-form'}>
+                <label htmlFor="email">Email</label>
+                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <label htmlFor="password">Password</label>
+                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <button onClick={() => this.onFormSubmit('restore')}>Sign Up</button>
+                <button onClick={() => this.changeFormType('signin')}>Sign In</button>
+            </div>
+        } else if (this.state.restore) {
+            return <div className={'login-form'}>
+                <label htmlFor="email">Email</label>
+                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <button onClick={() => this.onFormSubmit('signup')}>Get password</button>
+                <button onClick={() => this.changeFormType('signin')}>Back</button>
+            </div>
+        } else {
+            return <div className={'login-form'}>
+                <label htmlFor="email">Email</label>
+                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <label htmlFor="password">Password</label>
+                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <button onClick={() => this.onFormSubmit('signin')}>Sign In</button>
+                <button onClick={() => this.changeFormType('restore')}>Forgot password?</button>
+                <button onClick={() => this.changeFormType('signup')}>Sign up</button>
+            </div>
+        }
+    }
+
+    private onEmailChanged(event): void {
+        this.setState({email: event.target.value});
+    }
+
+    private onPwdChanged(event): void {
+        this.setState({password: event.target.value});
+    }
+
+    private onFormSubmit(type: string): void {
+        switch (type) {
+            case 'signin':
+                this.sendLoginRequest()
+                    .then((user) => {
+                        this.props.onUserSubmit(user);
+                    });
+                break;
+            case 'signup':
+                break;
+            case 'restore':
+                break;
+        }
+    }
+
+    private changeFormType(type: string): void {
+        switch (type) {
+            case 'signin':
+                this.setState({signUp: false, restore: false});
+                break;
+            case 'signup':
+                this.setState({signUp: true, restore: false});
+                break;
+            case 'restore':
+                this.setState({signUp: false, restore: true});
+                break;
+        }
+    }
+
+    private sendLoginRequest(): Promise<any> {
+        const reqParams = {
+            method: 'POST',
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password
+            })
+        };
+
+        return fetch(`${this.apiHost}/login`, reqParams)
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                }
+
+                console.log(`User authorisation is failed`);
+            })
+    }
+}

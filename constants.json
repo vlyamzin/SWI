@@ -1,6 +1,7 @@
 {
-  "dbUrl": "http://10.10.4.74",
-  "dbPort": "5984",
+  "dbUrl": "ds119060.mlab.com:19060/swi",
+  "dbUserName": "admin",
+  "dbUserPwd": "S02w06I1989",
   "appUrl": "http://localhost",
   "appPortHttp": "8080",
   "appPortWS": "9000"
