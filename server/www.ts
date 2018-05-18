@@ -3,11 +3,15 @@ import * as express from 'express';
 import {LoginRoute} from './routes/login';
 import {Server} from './server';
 import {db} from './db';
+import {game, gameTemplate} from './models/game.model';
+import {user} from './models/user.model';
 
 const path = require('path')
     , logger = require('morgan')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
+    , session = require('express-session')
+    , MongoStore = require('connect-mongo')(session)
     , methodOverride = require('method-override')
     , errorHandler = require('errorhandler')
     , port = normalizePort(process.env.PORT || 8080)
@@ -57,7 +61,28 @@ export class StaticServer {
             extended: true
         }));
 
-        this.server.use(cookieParser("SECRET_GOES_HERE")); // use cookie parser middleware
+        this.server.use(cookieParser("May the force be with you")); // use cookie parser middleware
+        // use session middleware
+        this.server.use(session({
+            secret: 'May the force be with you',
+            cookie: {
+                secure: false,
+                httpOnly: false,
+                maxAge: 1000 * 60* 72
+            },
+            resave: true,
+            saveUninitialized: false,
+            store: new MongoStore({
+                url: `mongodb://${constants.dbUserName}:${constants.dbUserPwd}@${constants.dbUrl}`
+            })
+        }));
+        this.server.use(function(req, res, next) {
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.header('Access-Control-Allow-Origin', req.headers.origin);
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+            res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+            next();
+        });
         // use override middleware
         this.server.use(methodOverride());
 
@@ -90,10 +115,53 @@ export class StaticServer {
         this.server.get('/games', (req, res) => {
             db.getGamesList()
                 .then((data) => {
-                    res.send(data)
+                    res.cookie('test', 'Some test value')
+                        .send(data)
                 })
                 .catch(() => {
                     res.status(500).send('Game list is not defined')
+                })
+        });
+
+        this.server.post('/games/new', (req, res) => {
+            const g = gameTemplate(req.body.name);
+
+            db.getGameIdByName(g.name)
+                .then((data) => {
+                    if (data) {
+                        res.status(400).send('There is a game with provided name')
+                    } else {
+                        game.cache = g;
+                        res.status(200).send('Ok');
+                    }
+                })
+        });
+
+        this.server.post('/user/signup', (req, res) => {
+            const userData = {
+                email: req.body.email,
+                password: req.body.password
+            };
+
+            user.create(userData)
+                .then(() => {
+                    res.status(200).send(userData)
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(400).send('Sign up failed');
+                })
+        });
+
+        this.server.post('/user/login', (req, res) => {
+            user.authenticate(req.body.email, req.body.password)
+                .then((user) => {
+                    req['session'].userId = user['_id'];
+                    res.status(200).send();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(401).send();
                 })
         })
     }
@@ -116,6 +184,16 @@ function normalizePort(val): number | string | boolean {
     }
 
     return false;
+}
+
+function requiresLogin(req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        const err = new Error('You must be logged in to view this page.');
+        err['status'] = 401;
+        return next(err);
+    }
 }
 
 StaticServer.bootstrap(port);

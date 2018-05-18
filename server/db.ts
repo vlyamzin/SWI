@@ -1,5 +1,5 @@
 import {Connection} from 'mongoose';
-import {game} from './models/game';
+import {game} from './models/game.model';
 
 const mongoose = require('mongoose')
     , constants = require('../constants.json');
@@ -24,16 +24,13 @@ class Db {
     constructor() {
         this._instance = mongoose.connect(`mongodb://${constants.dbUserName}:${constants.dbUserPwd}@${constants.dbUrl}`)
             .then((res) => {
-                console.log("Db connected");
+                console.log(`MongoDB is connected and running under ${constants.dbUrl}`);
                 this._instance = res.connection;
             });
-
-        if (this._instance) {
-            console.log(`CouchDB is connected and running under ${constants.dbUrl}:${constants.dbPort}`);
-        }
     }
 
     /**
+     * @TODO add return type
      * Returns a list of names of all games stored in CouchDB
      *
      * @class Db
@@ -42,7 +39,7 @@ class Db {
      * @return {Promise}
      * */
     public getGamesList(): Promise<any> {
-        return game.find({}, 'name')
+        return game.model.find({}, 'name')
             .then((data) => {
                 return data.map((item) => {
                     return item.name;
@@ -50,6 +47,23 @@ class Db {
             })
             .catch((err) => {
                 console.log(err);
+            })
+    }
+
+    /**
+     * @TODO add return type
+     * Returns a game id based on provided name.
+     *
+     * @class Db
+     * @method getGameIdByName
+     * @param {string} name – A game name
+     * @return {Promise} – A game id or null
+     * @public
+     * */
+    public getGameIdByName(name: string): Promise<any> {
+        return game.model.findOne({name: name}, '_id')
+            .then((data) => {
+                return data;
             })
     }
 }

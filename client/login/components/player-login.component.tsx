@@ -34,6 +34,14 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
         </div>
     }
 
+    /**
+     * Returns a template based on a state
+     *
+     * @class PlayerLogin
+     * @method getForm
+     * @return {JSX.Element | string} – A template
+     * @private
+     * */
     private getForm(): JSX.Element | string {
         if (this.state.signUp) {
             return <div className={'login-form'}>
@@ -41,14 +49,14 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
                 <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
                 <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('restore')}>Sign Up</button>
+                <button onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
                 <button onClick={() => this.changeFormType('signin')}>Sign In</button>
             </div>
         } else if (this.state.restore) {
             return <div className={'login-form'}>
                 <label htmlFor="email">Email</label>
                 <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('signup')}>Get password</button>
+                <button onClick={() => this.onFormSubmit('restore')}>Get password</button>
                 <button onClick={() => this.changeFormType('signin')}>Back</button>
             </div>
         } else {
@@ -64,6 +72,14 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
         }
     }
 
+    /**
+     * Input change listener. Stores an inputted email.
+     *
+     * @class PlayerLogin
+     * @method onEmailChanged
+     * @param {Object} event – DOM Event
+     * @private
+     * */
     private onEmailChanged(event): void {
         this.setState({email: event.target.value});
     }
@@ -81,6 +97,10 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
                     });
                 break;
             case 'signup':
+                this.sendSignUpRequest()
+                    .then((user) => {
+                        this.props.onUserSubmit(user);
+                    });
                 break;
             case 'restore':
                 break;
@@ -102,21 +122,48 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
     }
 
     private sendLoginRequest(): Promise<any> {
-        const reqParams = {
+        const reqParams: RequestInit = {
             method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 email: this.state.email,
                 password: this.state.password
             })
         };
 
-        return fetch(`${this.apiHost}/login`, reqParams)
+        return fetch(`${this.apiHost}/user/login`, reqParams)
+            .then((res) => {
+                if (res.ok) {
+                    return 'ok';
+                }
+
+                console.log(`User authorisation is failed`);
+            })
+    }
+
+    private sendSignUpRequest(): Promise<any> {
+        const reqParams: RequestInit = {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password
+            })
+        };
+
+        return fetch(`${this.apiHost}/user/signup`, reqParams)
             .then((res) => {
                 if (res.ok) {
                     return res.json();
                 }
 
-                console.log(`User authorisation is failed`);
+                console.log(`User creation is failed`);
             })
     }
 }

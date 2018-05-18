@@ -5,6 +5,7 @@ import {GameListComponent} from './login/components/game-list.component';
 import {LoginStateEnum} from './login/enums/login-state.enum';
 import {CharacterCreation} from './login/components/character-creation.component';
 import {PlayerLogin} from './login/components/player-login.component';
+import {IUser} from '../server/models/user.model';
 
 interface LoginState {
     gameList: Array<string>,
@@ -78,7 +79,7 @@ export class Login extends React.Component<{}, LoginState>{
                     return response.json();
                 }
 
-                console.error('Can not load game list');
+                throw new Error(response.statusText)
             })
     }
 
@@ -102,10 +103,43 @@ export class Login extends React.Component<{}, LoginState>{
      * @private
      * */
     private submitNewGame(): void {
-        this.setState({loginState: LoginStateEnum.PLAYER})
+        const params: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: this.state.newGameName
+            })
+        };
+
+        fetch(`${this.apiHost}/games/new`, params)
+            .then((response) => {
+                if (response.ok) {
+                    return response.statusText;
+                }
+
+                throw new Error(response.statusText)
+            })
+            .then(() => {
+                this.setState({loginState: LoginStateEnum.PLAYER})
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 
-    private userLoggedIn(user): void {
+    /**
+     * Listens when a user is logged in. Proceed to the next step:
+     * 1. Player creation form
+     * 2. Game start
+     *
+     * @class Login
+     * @method userLoggedIn
+     * @param {IUser} user – user data
+     * @private
+     * */
+    private userLoggedIn(user: IUser): void {
         if (this.state.selectedGame) {
             /* check if game is running but user is new.
             if yes – then show Character creation form.
