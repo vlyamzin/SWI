@@ -28,7 +28,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
     }
 
     render() {
-        return <div>
+        return <div className={'login-form'}>
             <h3>Log under your account or create new one</h3>
             {this.getForm()}
         </div>
@@ -44,30 +44,30 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
      * */
     private getForm(): JSX.Element | string {
         if (this.state.signUp) {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
-                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
-                <button onClick={() => this.changeFormType('signin')}>Sign In</button>
+                <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Sign In</button>
             </div>
         } else if (this.state.restore) {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('restore')}>Get password</button>
-                <button onClick={() => this.changeFormType('signin')}>Back</button>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('restore')}>Get password</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Back</button>
             </div>
         } else {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
-                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('signin')}>Sign In</button>
-                <button onClick={() => this.changeFormType('restore')}>Forgot password?</button>
-                <button onClick={() => this.changeFormType('signup')}>Sign up</button>
+                <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signin')}>Sign In</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('restore')}>Forgot password?</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signup')}>Sign up</button>
             </div>
         }
     }

@@ -6,6 +6,7 @@ import {LoginStateEnum} from './login/enums/login-state.enum';
 import {CharacterCreation} from './login/components/character-creation.component';
 import {PlayerLogin} from './login/components/player-login.component';
 import {IUser} from '../server/models/user.model';
+import './assets/styles/login.scss'
 
 interface LoginState {
     gameList: Array<string>,
@@ -43,8 +44,8 @@ export class Login extends React.Component<{}, LoginState>{
     }
 
     render() {
-        return <div>
-            <h1>Welcome to Start Wars Imperium</h1>
+        return <div className="login-container">
+            <h1 className="login-title">Welcome to Start Wars Imperium</h1>
             {this.getComponentByState()}
         </div>
     }

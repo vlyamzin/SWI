@@ -16,13 +16,15 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
     render() {
         return <div className={'login-form'}>
             <h3>Select a Game</h3>
-            {[...this.props.gameList].map((gameName, i) => {
-                return <div key={i}>{gameName}</div>
-            })}
-            <input type="text" value={this.props.newGameName} onChange={(e) => {
+            <div className={'login-form__games-list'}>
+                {[...this.props.gameList].map((gameName, i) => {
+                    return <div className={'login-form__game'} key={i}>{gameName}</div>
+                })}
+            </div>
+            <input className={'login-form__input'} type="text" placeholder="Enter name of new game" value={this.props.newGameName} onChange={(e) => {
                 this.props.storeNewGameName(e)
             }}/>
-            <button onClick={() => {
+            <button className={'login-form__btn'} onClick={() => {
                 this.props.submitNewGame()
             }}>New Game
             </button>
