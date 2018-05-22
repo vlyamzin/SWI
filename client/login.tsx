@@ -74,7 +74,7 @@ export class Login extends React.Component<{}, LoginState>{
      * @return {Promise} Array with game names
      * */
     private getGameList(): Promise<string[]> {
-        return fetch(`${this.apiHost}/games`)
+        return fetch(`${this.apiHost}/api/games`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -114,7 +114,7 @@ export class Login extends React.Component<{}, LoginState>{
             })
         };
 
-        fetch(`${this.apiHost}/games/new`, params)
+        fetch(`${this.apiHost}/api/games/new`, params)
             .then((response) => {
                 if (response.ok) {
                     return response.statusText;

@@ -43,7 +43,7 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
 
     public getGame (name): Promise<any> {
         name = name['gameName'].replace(' ', '-');
-        return fetch(`${this.apiHost}/api/games/:${name}`)
+        return fetch(`${this.apiHost}/api/games/${name}`)
             .then((res) => console.log(res))
             .catch((error) => console.log(error));
     }
