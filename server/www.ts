@@ -2,9 +2,11 @@ import {IndexRoute} from './routes';
 import * as express from 'express';
 import {LoginRoute} from './routes/login';
 import {Server} from './server';
+import {Application} from 'express';
+import GameController from './controllers/game.controller';
+import UserController from './controllers/user.controller';
+import PlayerController from './controllers/player.controller';
 import {db} from './db';
-import {game, gameTemplate} from './models/game.model';
-import {user} from './models/user.model';
 
 const path = require('path')
     , logger = require('morgan')
@@ -19,7 +21,7 @@ const path = require('path')
 
 
 export class StaticServer {
-    public server: express.Application;
+    public server: Application;
 
 
     /**
@@ -93,6 +95,7 @@ export class StaticServer {
         });
 
         this.server.use(errorHandler()); // error handling
+        db.init();
     }
 
     /**
@@ -112,58 +115,9 @@ export class StaticServer {
     }
 
     private api(): void {
-        this.server.get('/games', (req, res) => {
-            db.getGamesList()
-                .then((data) => {
-                    res.cookie('test', 'Some test value')
-                        .send(data)
-                })
-                .catch(() => {
-                    res.status(500).send('Game list is not defined')
-                })
-        });
-
-        this.server.post('/games/new', (req, res) => {
-            const g = gameTemplate(req.body.name);
-
-            db.getGameIdByName(g.name)
-                .then((data) => {
-                    if (data) {
-                        res.status(400).send('There is a game with provided name')
-                    } else {
-                        game.cache = g;
-                        res.status(200).send('Ok');
-                    }
-                })
-        });
-
-        this.server.post('/user/signup', (req, res) => {
-            const userData = {
-                email: req.body.email,
-                password: req.body.password
-            };
-
-            user.create(userData)
-                .then(() => {
-                    res.status(200).send(userData)
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(400).send('Sign up failed');
-                })
-        });
-
-        this.server.post('/user/login', (req, res) => {
-            user.authenticate(req.body.email, req.body.password)
-                .then((user) => {
-                    req['session'].userId = user['_id'];
-                    res.status(200).send();
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(401).send();
-                })
-        })
+        this.server.use('/api/games', GameController);
+        this.server.use('/api/user', UserController);
+        this.server.use('/api/player', requiresLogin, PlayerController);
     }
 }
 
@@ -186,6 +140,9 @@ function normalizePort(val): number | string | boolean {
     return false;
 }
 
+/**
+ * Session middleware. Check if user has an access to the particular api.
+ * */
 function requiresLogin(req, res, next) {
     if (req.session && req.session.userId) {
         return next();
