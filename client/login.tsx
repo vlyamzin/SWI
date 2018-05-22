@@ -29,7 +29,7 @@ export class Login extends React.Component<{}, LoginState>{
         this.state = {
             gameList: [],
             newGameName: '',
-            loginState: LoginStateEnum.GAMELIST,
+            loginState: LoginStateEnum.PLAYER,
             selectedGame: '',
             user: null
         };
