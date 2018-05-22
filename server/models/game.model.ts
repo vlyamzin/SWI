@@ -1,11 +1,18 @@
 import {Model, Schema, Document, model} from 'mongoose';
+import {IPlayer, player} from './player.model';
 
 export interface IGame {
     gameNumber: string,
-    name: string
+    name: string,
+    players?: Array<IPlayer>
 }
 
-export interface IGameModel extends Document, IGame {}
+export interface IGameDocument extends Document, IGame {}
+
+export interface IGameModel extends Model<IGameDocument> {
+    getGamesList(): Promise<string[]>,
+    getGameByName(name: string): Promise<IGame>
+}
 
 /**
  * @class GameModel
@@ -14,7 +21,7 @@ export interface IGameModel extends Document, IGame {}
 class GameModel {
     private readonly schema: Schema;
     private _cache: IGame;
-    public model: Model<IGameModel>;
+    public model: IGameModel;
 
     public static template(name?: string) {
         return {
@@ -34,15 +41,15 @@ class GameModel {
                 type: 'string',
                 unique: true,
                 require: true
-            }
+            },
+            players: [player.schema]
         });
         this._cache = null;
 
-        this.model = model<IGameModel>('game', this.schema);
-    }
+        this.schema.statics.getGamesList = this.getGamesList.bind(this);
+        this.schema.statics.getGameByName = this.getGameByName.bind(this);
 
-    public get cache() {
-        return this._cache;
+        this.model = model<IGameDocument, IGameModel>('game', this.schema);
     }
 
     public set cache(obj) {
@@ -53,8 +60,48 @@ class GameModel {
         }
     }
 
-    public clearCache() {
-        this._cache = null;
+    /**
+     * Returns a list of names of all games stored in CouchDB
+     *
+     * @class Db
+     * @method getGameList
+     * @public
+     * @return {Promise}
+     * */
+    private getGamesList(): Promise<string[]> {
+        return this.model.find({}, 'name')
+            .then((data) => {
+                return data.map((item) => {
+                    return item.name;
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                return err;
+            })
+    }
+
+    /**
+     * Returns a game id based on provided name.
+     *
+     * @class Db
+     * @method getGameByName
+     * @param {string} name – A game name
+     * @return {Promise} – A game id or null
+     * @public
+     * */
+    private getGameByName(name: string): Promise<IGame> {
+        return game.model.findOne({name: name})
+            .then((data) => {
+                console.log('Test: ' + data);
+                if (data) {
+                    return data;
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                return err;
+            })
     }
 }
 
