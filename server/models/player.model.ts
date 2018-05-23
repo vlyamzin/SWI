@@ -10,7 +10,10 @@ export interface IPlayer {
 
 export interface IPlayerModel {
     schema: Schema,
-    createPlayer(gameName: string, player: IPlayer): Promise<IPlayer>
+
+    createPlayer(gameName: string, player: IPlayer): Promise<IPlayer>,
+
+    getPlayerByUserId(userId: string, gameName: string): Promise<IPlayer>
 }
 
 /**
@@ -72,6 +75,30 @@ class Player implements IPlayerModel {
         )
             .then((game) => {
                 return game.players.find(p => p.userId === player.userId)
+            })
+            .catch((err) => {
+                return err;
+            })
+    }
+
+    /**
+     * Returns a player by provided id
+     *
+     * @class Player
+     * @method getPlayerByUserId
+     * @param {string} userId – Id of running user
+     * @param {IPlayer} gameName – The name of the game
+     * @return {Promise<IPlayer>} Promise with a player
+     * */
+    public getPlayerByUserId(userId: string, gameName: string): Promise<IPlayer> {
+        return game.model.findOne(
+            {'players.userId': userId, 'name': gameName}
+        )
+            .then((data) => {
+                return data ? data.players[0] : null;
+            })
+            .catch((err) => {
+                return err
             })
     }
 }
