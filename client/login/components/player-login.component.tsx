@@ -136,7 +136,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
 
         return fetch(`${this.apiHost}/api/user/login`, reqParams)
             .then((res) => {
-                if (res.ok) {
+                if (res.ok && res.status == 200) {
                     return 'ok';
                 }
 
@@ -159,7 +159,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
 
         return fetch(`${this.apiHost}/api/user/signup`, reqParams)
             .then((res) => {
-                if (res.ok) {
+                if (res.ok && res.status == 200) {
                     return res.json();
                 }
 

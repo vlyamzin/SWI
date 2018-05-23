@@ -29,7 +29,7 @@ export class Login extends React.Component<{}, LoginState>{
         this.state = {
             gameList: [],
             newGameName: '',
-            loginState: LoginStateEnum.PLAYER,
+            loginState: LoginStateEnum.GAMELIST,
             selectedGame: '',
             user: null
         };
@@ -54,6 +54,7 @@ export class Login extends React.Component<{}, LoginState>{
         switch (this.state.loginState) {
             case LoginStateEnum.GAMELIST:
                 return <GameListComponent gameList={this.state.gameList}
+                                          setGame={this.setSelectedGame.bind(this)}
                                           newGameName={this.state.newGameName}
                                           storeNewGameName={this.storeNewGameName.bind(this)}
                                           submitNewGame={this.submitNewGame.bind(this)}/>;
@@ -82,6 +83,17 @@ export class Login extends React.Component<{}, LoginState>{
 
                 throw new Error(response.statusText)
             })
+    }
+
+    /**
+     * Set the name of selected game. Proceed to the next step, login.
+     *
+     * @class GameList
+     * @method setSelectedGame
+     * @private
+     * */
+    private setSelectedGame(name): void {
+        this.setState({selectedGame: name, loginState: LoginStateEnum.PLAYER});
     }
 
     /**
@@ -145,6 +157,8 @@ export class Login extends React.Component<{}, LoginState>{
             /* check if game is running but user is new.
             if yes – then show Character creation form.
             if no – proceed to main game instance */
+
+            this.setState({loginState: LoginStateEnum.CHARACTER});
         } else {
 
         }

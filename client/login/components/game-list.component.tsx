@@ -3,6 +3,7 @@ import * as constants from '../../../constants.json';
 
 export interface GameListProps {
     gameList: Array<string>,
+    setGame: Function,
     newGameName: string,
     storeNewGameName: Function,
     submitNewGame
@@ -41,10 +42,16 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
     }
 
 
-    public getGame (name): Promise<any> {
+    private getGame (name): Promise<any> {
         name = name['gameName'].replace(' ', '-');
         return fetch(`${this.apiHost}/api/games/${name}`)
-            .then((res) => console.log(res))
+            .then((res) => {
+                if (res.ok) {
+                    return this.props.setGame(name);
+                }
+
+                console.log(`Game request is failed`);
+            })
             .catch((error) => console.log(error));
     }
 
