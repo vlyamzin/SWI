@@ -9,7 +9,8 @@ interface PlayerLoginState {
     signUp: boolean,
     restore: boolean,
     email: string,
-    password: string
+    password: string,
+    wrongAcc: boolean
 }
 
 export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginState> {
@@ -22,7 +23,8 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             signUp: false,
             restore: false,
             email: '',
-            password: ''
+            password: '',
+            wrongAcc: false
         };
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
     }
@@ -49,6 +51,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
                 <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
                 <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Email or password is not correct or already used</div>
                 <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
                 <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Sign In</button>
             </div>
@@ -56,6 +59,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             return <div>
                 <label htmlFor="email">Email</label>
                 <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Account is not correct</div>
                 <button className={'login-form__btn'} onClick={() => this.onFormSubmit('restore')}>Get password</button>
                 <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Back</button>
             </div>
@@ -65,6 +69,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
                 <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
                 <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Account is not correct</div>
                 <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signin')}>Sign In</button>
                 <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('restore')}>Forgot password?</button>
                 <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signup')}>Sign up</button>
@@ -116,6 +121,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
     }
 
     private changeFormType(type: string): void {
+        this.setState({wrongAcc: false});
         switch (type) {
             case 'signin':
                 this.setState({signUp: false, restore: false});
@@ -146,9 +152,10 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             .then((res) => {
                 console.log(res);
                 if (res.ok && res.status == 200) {
+                    this.setState({wrongAcc: false});
                     return 'ok';
                 }
-
+                this.setState({wrongAcc: true});
                 console.log(`User authorisation is failed`);
             })
     }
@@ -169,9 +176,10 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
         return fetch(`${this.apiHost}/api/user/signup`, reqParams)
             .then((res) => {
                 if (res.ok && res.status == 200) {
+                    this.setState({wrongAcc: false});
                     return res.json();
                 }
-
+                this.setState({wrongAcc: true});
                 console.log(`User creation is failed`);
             })
     }
