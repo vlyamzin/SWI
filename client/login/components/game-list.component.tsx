@@ -46,6 +46,7 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
         name = name['gameName'].replace(' ', '-');
         return fetch(`${this.apiHost}/api/games/${name}`)
             .then((res) => {
+                console.log(res);
                 if (res.ok) {
                     return this.props.setGame(name);
                 }

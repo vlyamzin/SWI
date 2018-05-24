@@ -93,16 +93,24 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             case 'signin':
                 this.sendLoginRequest()
                     .then((user) => {
-                        this.props.onUserSubmit(user);
+                        if (user) {
+                            this.props.onUserSubmit(user);
+                        }
                     });
                 break;
             case 'signup':
                 this.sendSignUpRequest()
                     .then((user) => {
-                        this.props.onUserSubmit(user);
+                        if (user) {
+                            this.props.onUserSubmit(user);
+                        }
                     });
                 break;
             case 'restore':
+                this.sendRestoreRequest()
+                    .then((user) => {
+                        console.log(user);
+                    });
                 break;
         }
     }
@@ -136,6 +144,7 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
 
         return fetch(`${this.apiHost}/api/user/login`, reqParams)
             .then((res) => {
+                console.log(res);
                 if (res.ok && res.status == 200) {
                     return 'ok';
                 }
@@ -165,5 +174,21 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
 
                 console.log(`User creation is failed`);
             })
+    }
+
+    private sendRestoreRequest(): Promise<any> {
+        const reqParams: RequestInit = {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: this.state.email
+            })
+        };
+
+        return fetch(`${this.apiHost}/api/user/restore`, reqParams)
+            .then(res => console.log(res));
     }
 }
