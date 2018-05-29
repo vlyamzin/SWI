@@ -1,6 +1,7 @@
 import {BaseController} from './base.controller';
 import {user} from '../models/user.model';
 import {Request, Response} from 'express';
+import {player} from '../models/player.model';
 
 /**
  * @class UserController
@@ -51,7 +52,14 @@ class UserController extends BaseController {
         user.authenticate(req.body.email, req.body.password)
             .then((user) => {
                 req['session'].userId = user['_id'];
-                res.status(200).send();
+                player.getPlayerByUserId(user['_id'], req.body.gameName)
+                    .then((data) => {
+                        if (data) {
+                            res.redirect('/');
+                        } else {
+                            res.status(200).send();
+                        }
+                    });
             })
             .catch((err) => {
                 console.log(err);
