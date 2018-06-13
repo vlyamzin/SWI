@@ -33,8 +33,6 @@ export class CharacterCreation extends React.Component<SelectedGameData, Charact
             race: RacesEnum.Wookiees
         };
 
-        console.log(this.props.gameData);
-
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
         this.pickedColors = this.props.gameData['players'].map(elem => {
             return elem['color'];
