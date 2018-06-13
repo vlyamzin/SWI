@@ -150,7 +150,6 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
 
         return fetch(`${this.apiHost}/api/user/login`, reqParams)
             .then((res) => {
-                console.log(res);
                 if (res.ok && res.status == 200) {
                     this.setState({wrongAcc: false});
                     return 'ok';

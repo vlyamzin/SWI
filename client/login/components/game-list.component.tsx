@@ -28,7 +28,7 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
             <div className={'login-form__games-list'}>
                 {[...this.props.gameList].map((gameName, i) => {
                     return <div className={'login-form__game'} key={i}
-                                onClick={() => this.getGame({gameName})}>{gameName}</div>
+                                onClick={() => this.pickGame({gameName})}>{gameName}</div>
                 })}
             </div>
             <input className={'login-form__input'} type="text" placeholder="Enter name of new game" value={this.props.newGameName} onChange={(e) => {
@@ -42,11 +42,17 @@ export class GameListComponent extends React.Component<GameListProps, {}> {
     }
 
 
-    private getGame (name): Promise<any> {
+    private pickGame (name): Promise<any> {
         name = name['gameName'].replace(' ', '-');
-        return fetch(`${this.apiHost}/api/games/${name}`)
+        const reqParams: RequestInit = {
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return fetch(`${this.apiHost}/api/games/${name}`, reqParams)
             .then((res) => {
-                console.log(res);
                 if (res.ok) {
                     return this.props.setGame(name);
                 }

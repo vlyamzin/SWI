@@ -3,6 +3,11 @@ import {colors} from '../../logic/models/colors';
 import * as React from 'react';
 import {PlayerColorsEnum} from '../../common/enums/player-colors.enum';
 import {RacesEnum} from '../../common/enums/races.enum';
+import * as constants from '../../../constants.json';
+
+export interface SelectedGameData {
+    gameData: Object
+}
 
 interface CharacterCreationState {
     user: string,
@@ -14,15 +19,29 @@ interface CharacterCreationState {
  * @class PlayerLogin
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */
-export class CharacterCreation extends React.Component<{}, CharacterCreationState>{
+export class CharacterCreation extends React.Component<SelectedGameData, CharacterCreationState>{
+    private apiHost: string;
+    private pickedColors: Array<string>;
+    private pickedRaces: Array<number>;
 
     constructor(props) {
         super(props);
+
         this.state = {
             user: '',
             color: colors.get(PlayerColorsEnum.Red).hash,
             race: RacesEnum.Wookiees
         };
+
+        console.log(this.props.gameData);
+
+        this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
+        this.pickedColors = this.props.gameData['players'].map(elem => {
+            return elem['color'];
+        });
+        this.pickedRaces = this.props.gameData['players'].map(elem => {
+            return +elem['race'];
+        });
     }
 
     /**
@@ -39,13 +58,17 @@ export class CharacterCreation extends React.Component<{}, CharacterCreationStat
             <label htmlFor="color">Color</label>
             <select className={'login-form__select'} name="color" id="color" onChange={e => this.onColorChanged(e)} value={this.state.color}>
                 {[...colors.values()].map((i) => {
-                    return <option key={i.hash} value={i.hash}>{i.name}</option>
+                    if (this.pickedColors.indexOf(i.name.toLowerCase()) < 0) {
+                        return <option key={i.hash} value={i.hash}>{i.name}</option>
+                    }
                 })}
             </select>
             <label htmlFor="race">Race</label>
             <select className={'login-form__select'} name="color" id="color" onChange={e => this.onRaceChanged(e)} value={this.state.race}>
                 {[...races.entries()].map((i) => {
-                    return <option key={i[0]} value={i[0].toString()}>{i[1]}</option>
+                    if (this.pickedRaces.indexOf(i[0]) < 0) {
+                        return <option key={i[0]} value={i[0].toString()}>{i[1]}</option>
+                    }
                 })}
             </select>
             <button className={'login-form__btn'} onClick={this.submitPlayer.bind(this)}>Go</button>
@@ -85,8 +108,8 @@ export class CharacterCreation extends React.Component<{}, CharacterCreationStat
      * @method onRaceChanged
      * @param event – DOM event
      * @private
-     * */
-    private onRaceChanged(event): void {
+         * */
+        private onRaceChanged(event): void {
         this.setState({race: event.target.value});
     }
 

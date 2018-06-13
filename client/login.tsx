@@ -10,7 +10,7 @@ import './assets/styles/login.scss'
 
 interface LoginState {
     gameList: Array<string>,
-    selectedGame: string,
+    selectedGame: Object,
     user: any,
     newGameName: string,
     loginState: LoginStateEnum
@@ -28,9 +28,9 @@ export class Login extends React.Component<{}, LoginState>{
 
         this.state = {
             gameList: [],
+            selectedGame: {},
             newGameName: '',
             loginState: LoginStateEnum.GAMELIST,
-            selectedGame: '',
             user: null
         };
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
@@ -39,7 +39,7 @@ export class Login extends React.Component<{}, LoginState>{
     componentDidMount() {
         this.getGameList()
             .then((data) => {
-                this.setState({gameList: data})
+                this.setState({gameList: data});
             })
     }
 
@@ -61,7 +61,7 @@ export class Login extends React.Component<{}, LoginState>{
             case LoginStateEnum.PLAYER:
                 return <PlayerLogin onUserSubmit={this.userLoggedIn.bind(this)}></PlayerLogin>
             case LoginStateEnum.CHARACTER:
-                return <CharacterCreation></CharacterCreation>
+                return <CharacterCreation gameData={this.state.selectedGame}></CharacterCreation>
 
         }
     }
@@ -93,7 +93,12 @@ export class Login extends React.Component<{}, LoginState>{
      * @private
      * */
     private setSelectedGame(name): void {
-        this.setState({selectedGame: name, loginState: LoginStateEnum.PLAYER});
+        fetch(`${this.apiHost}/api/games/${name}`)
+            .then(res => {
+                res.json().then(data => {
+                    this.setState({selectedGame: data['game'], loginState: LoginStateEnum.PLAYER});
+                });
+            });
     }
 
     /**
