@@ -9,7 +9,8 @@ interface PlayerLoginState {
     signUp: boolean,
     restore: boolean,
     email: string,
-    password: string
+    password: string,
+    wrongAcc: boolean
 }
 
 export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginState> {
@@ -22,13 +23,14 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             signUp: false,
             restore: false,
             email: '',
-            password: ''
+            password: '',
+            wrongAcc: false
         };
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
     }
 
     render() {
-        return <div>
+        return <div className={'login-form'}>
             <h3>Log under your account or create new one</h3>
             {this.getForm()}
         </div>
@@ -44,30 +46,33 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
      * */
     private getForm(): JSX.Element | string {
         if (this.state.signUp) {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
-                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
-                <button onClick={() => this.changeFormType('signin')}>Sign In</button>
+                <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Email or password is not correct or already used</div>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signup')}>Sign Up</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Sign In</button>
             </div>
         } else if (this.state.restore) {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('restore')}>Get password</button>
-                <button onClick={() => this.changeFormType('signin')}>Back</button>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Account is not correct</div>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('restore')}>Get password</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signin')}>Back</button>
             </div>
         } else {
-            return <div className={'login-form'}>
+            return <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
+                <input className={'login-form__input'} type="email" value={this.state.email} onChange={e => this.onEmailChanged(e)}/>
                 <label htmlFor="password">Password</label>
-                <input type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
-                <button onClick={() => this.onFormSubmit('signin')}>Sign In</button>
-                <button onClick={() => this.changeFormType('restore')}>Forgot password?</button>
-                <button onClick={() => this.changeFormType('signup')}>Sign up</button>
+                <input className={'login-form__input'} type="password" value={this.state.password} onChange={e => this.onPwdChanged(e)}/>
+                <div className={'error-msg ' + (this.state.wrongAcc ? '': 'hidden')}>Account is not correct</div>
+                <button className={'login-form__btn'} onClick={() => this.onFormSubmit('signin')}>Sign In</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('restore')}>Forgot password?</button>
+                <button className={'login-form__smallBtn'} onClick={() => this.changeFormType('signup')}>Sign up</button>
             </div>
         }
     }
@@ -93,21 +98,30 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             case 'signin':
                 this.sendLoginRequest()
                     .then((user) => {
-                        this.props.onUserSubmit(user);
+                        if (user) {
+                            this.props.onUserSubmit(user);
+                        }
                     });
                 break;
             case 'signup':
                 this.sendSignUpRequest()
                     .then((user) => {
-                        this.props.onUserSubmit(user);
+                        if (user) {
+                            this.props.onUserSubmit(user);
+                        }
                     });
                 break;
             case 'restore':
+                this.sendRestoreRequest()
+                    .then((user) => {
+                        console.log(user);
+                    });
                 break;
         }
     }
 
     private changeFormType(type: string): void {
+        this.setState({wrongAcc: false});
         switch (type) {
             case 'signin':
                 this.setState({signUp: false, restore: false});
@@ -134,12 +148,13 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             })
         };
 
-        return fetch(`${this.apiHost}/user/login`, reqParams)
+        return fetch(`${this.apiHost}/api/user/login`, reqParams)
             .then((res) => {
-                if (res.ok) {
+                if (res.ok && res.status == 200) {
+                    this.setState({wrongAcc: false});
                     return 'ok';
                 }
-
+                this.setState({wrongAcc: true});
                 console.log(`User authorisation is failed`);
             })
     }
@@ -157,13 +172,30 @@ export class PlayerLogin extends React.Component<PlayerLoginProps, PlayerLoginSt
             })
         };
 
-        return fetch(`${this.apiHost}/user/signup`, reqParams)
+        return fetch(`${this.apiHost}/api/user/signup`, reqParams)
             .then((res) => {
-                if (res.ok) {
+                if (res.ok && res.status == 200) {
+                    this.setState({wrongAcc: false});
                     return res.json();
                 }
-
+                this.setState({wrongAcc: true});
                 console.log(`User creation is failed`);
             })
+    }
+
+    private sendRestoreRequest(): Promise<any> {
+        const reqParams: RequestInit = {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: this.state.email
+            })
+        };
+
+        return fetch(`${this.apiHost}/api/user/restore`, reqParams)
+            .then(res => console.log(res));
     }
 }

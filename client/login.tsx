@@ -6,10 +6,11 @@ import {LoginStateEnum} from './login/enums/login-state.enum';
 import {CharacterCreation} from './login/components/character-creation.component';
 import {PlayerLogin} from './login/components/player-login.component';
 import {IUser} from '../server/models/user.model';
+import './assets/styles/login.scss'
 
 interface LoginState {
     gameList: Array<string>,
-    selectedGame: string,
+    selectedGame: Object,
     user: any,
     newGameName: string,
     loginState: LoginStateEnum
@@ -27,9 +28,9 @@ export class Login extends React.Component<{}, LoginState>{
 
         this.state = {
             gameList: [],
+            selectedGame: {},
             newGameName: '',
             loginState: LoginStateEnum.GAMELIST,
-            selectedGame: '',
             user: null
         };
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
@@ -38,13 +39,13 @@ export class Login extends React.Component<{}, LoginState>{
     componentDidMount() {
         this.getGameList()
             .then((data) => {
-                this.setState({gameList: data})
+                this.setState({gameList: data});
             })
     }
 
     render() {
-        return <div>
-            <h1>Welcome to Start Wars Imperium</h1>
+        return <div className="login-container">
+            <h1 className="login-title">Welcome to Start Wars Imperium</h1>
             {this.getComponentByState()}
         </div>
     }
@@ -53,13 +54,14 @@ export class Login extends React.Component<{}, LoginState>{
         switch (this.state.loginState) {
             case LoginStateEnum.GAMELIST:
                 return <GameListComponent gameList={this.state.gameList}
+                                          setGame={this.setSelectedGame.bind(this)}
                                           newGameName={this.state.newGameName}
                                           storeNewGameName={this.storeNewGameName.bind(this)}
                                           submitNewGame={this.submitNewGame.bind(this)}/>;
             case LoginStateEnum.PLAYER:
                 return <PlayerLogin onUserSubmit={this.userLoggedIn.bind(this)}></PlayerLogin>
             case LoginStateEnum.CHARACTER:
-                return <CharacterCreation></CharacterCreation>
+                return <CharacterCreation gameData={this.state.selectedGame}></CharacterCreation>
 
         }
     }
@@ -73,7 +75,7 @@ export class Login extends React.Component<{}, LoginState>{
      * @return {Promise} Array with game names
      * */
     private getGameList(): Promise<string[]> {
-        return fetch(`${this.apiHost}/games`)
+        return fetch(`${this.apiHost}/api/games`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -81,6 +83,22 @@ export class Login extends React.Component<{}, LoginState>{
 
                 throw new Error(response.statusText)
             })
+    }
+
+    /**
+     * Set the name of selected game. Proceed to the next step, login.
+     *
+     * @class GameList
+     * @method setSelectedGame
+     * @private
+     * */
+    private setSelectedGame(name): void {
+        fetch(`${this.apiHost}/api/games/${name}`)
+            .then(res => {
+                res.json().then(data => {
+                    this.setState({selectedGame: data['game'], loginState: LoginStateEnum.PLAYER});
+                });
+            });
     }
 
     /**
@@ -113,7 +131,7 @@ export class Login extends React.Component<{}, LoginState>{
             })
         };
 
-        fetch(`${this.apiHost}/games/new`, params)
+        fetch(`${this.apiHost}/api/games/new`, params)
             .then((response) => {
                 if (response.ok) {
                     return response.statusText;
@@ -144,6 +162,8 @@ export class Login extends React.Component<{}, LoginState>{
             /* check if game is running but user is new.
             if yes – then show Character creation form.
             if no – proceed to main game instance */
+
+            this.setState({loginState: LoginStateEnum.CHARACTER});
         } else {
 
         }

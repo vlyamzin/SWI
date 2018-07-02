@@ -117,7 +117,8 @@ export class StaticServer {
     private api(): void {
         this.server.use('/api/games', GameController);
         this.server.use('/api/user', UserController);
-        this.server.use('/api/player', requiresLogin, PlayerController);
+        this.server.use('/api/player', PlayerController);
+        // this.server.use('/api/player', requiresLogin, PlayerController);
     }
 }
 

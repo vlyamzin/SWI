@@ -113,7 +113,6 @@ class GameController extends BaseController {
         if (req.hasOwnProperty('session') && req['session'].userId) {
             player.getPlayerByUserId(req['session'].userId, data.name)
                 .then((user) => {
-                    console.log(user);
                     if (user) {
                         res.redirect('/');
                     } else {
