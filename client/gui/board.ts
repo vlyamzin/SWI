@@ -1,11 +1,10 @@
 import {Hex, IPoint} from "./hex"
 import {GameMap, IMapCoord} from "../logic/map"
 import {imageList} from '../index';
-import * as lodash from "lodash";
 import {GameState, IGameStateListener} from '../logic/game-state';
 import {Container} from 'typedi';
 import {GameStateEnum} from '../common/enums/game-state.enum';
-import {filter} from 'rxjs/operators';
+import {filter} from 'rxjs/operators/filter';
 
 
 export interface IBoard {
@@ -127,7 +126,7 @@ export class Board implements IGameStateListener{
                     if (j === 0) {
                         // find first hex from previous ring
                         // @TODO use ES6 find instead lodash
-                        let startHex = lodash.find(this.hexArray, (h: Hex) => {
+                        let startHex = this.hexArray.find( (h: Hex) => {
                             return h.getMapCoords.a === GameMap.sixMemberMap[i-1][j].a && h.getMapCoords.b === GameMap.sixMemberMap[i-1][j].b;
                         });
 
@@ -180,7 +179,7 @@ export class Board implements IGameStateListener{
             /**
              * zoom in/zoom out
              * */
-            if (event.wheelDelta > 0) {
+            if (event.deltaY > 0) {
                 this.hexSize = this.hexSize * 1.12;
             } else {
                 this.hexSize = this.hexSize / 1.12;

@@ -1,5 +1,5 @@
 import {IndexRoute} from './routes';
-import * as express from 'express';
+import express from 'express';
 import {LoginRoute} from './routes/login';
 import {Server} from './server';
 import {db} from './db';

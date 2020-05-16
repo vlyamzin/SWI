@@ -1,6 +1,6 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import * as classNames from 'classnames';
+import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
+import classNames from 'classnames';
 import {ITileImage} from './tileImages';
 
 export interface ITilePreviewerProps {
@@ -18,7 +18,7 @@ interface IState {
  * @class TilePreviewer
  * @classdesc Component that shows a tile in a separate popup window
  * */
-export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> {
+export class TilePreviewer extends Component<ITilePreviewerProps, IState> {
     constructor(props) {
         super(props);
         this.state = {

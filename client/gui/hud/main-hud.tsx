@@ -1,16 +1,16 @@
 import {GameState, IGameStateListener} from '../../logic/game-state';
 import {Container} from 'typedi';
-import * as React from 'react';
+import React, {Component} from 'react';
 import {GameStateEnum} from '../../common/enums/game-state.enum';
 import {PlayerService} from '../../logic/services/player.service';
 import {Tiles} from './tiles';
-import {filter} from 'rxjs/operators';
+import {filter} from 'rxjs/operators/filter';
 
 /**
  * @class MainHUD
  * @classdesc MainHUD component. Is a base container for UI components. Located on the bottom of the screen
  * */
-export class MainHUD extends React.Component<{}, {}> implements IGameStateListener{
+export class MainHUD extends Component<{}, {}> implements IGameStateListener{
     GameStateListeners = new Set([GameStateEnum.MAP_CREATION]);
     private readonly hud: HTMLElement;
     private gameStateService: GameState;

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as classNames from 'classnames';
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import {ITileImage} from '../tileImages';
 import {TilePreviewer} from '../tile-previewer';
 import {Container} from 'typedi';
@@ -15,7 +15,7 @@ export interface ITilesProps {
  * @class Tiles
  * @classdesc Component that represents a list of tiles. Used in the HUD
  * */
-export class Tiles extends React.Component<ITilesProps, {}> {
+export class Tiles extends Component<ITilesProps, {}> {
     private cacheService: CacheService;
     constructor(props) {
         super(props);

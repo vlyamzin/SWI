@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {IBoard, Board} from './gui/board';
 import {ImagePreloader} from './utils/imagePreloader';
 import {TileImages, ITileImage} from './gui/tileImages';
@@ -7,11 +6,11 @@ import './assets/styles/main.scss'
 import {GameState, IGameStateListener} from './logic/game-state';
 import {Container} from 'typedi';
 import {Login} from './gui/login';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import {GameStateEnum} from './common/enums/game-state.enum';
 import {PlayerService} from './logic/services/player.service';
-import {filter} from 'rxjs/operators';
+import {filter} from 'rxjs/operators/filter';
 
 let imageList, game;
 

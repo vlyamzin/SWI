@@ -1,6 +1,6 @@
 import {races} from '../logic/models/races';
 import {colors} from '../logic/models/colors';
-import * as React from 'react';
+import React, {Component} from 'react';
 import {PlayerColorsEnum} from '../common/enums/player-colors.enum';
 import {RacesEnum} from '../common/enums/races.enum';
 import {Container} from 'typedi';
@@ -18,7 +18,7 @@ interface ILoginState {
  * @class
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */
-export class Login extends React.Component<{}, ILoginState>{
+export class Login extends Component<{}, ILoginState>{
     private ps: PlayerService;
     private gs: GameState;
 

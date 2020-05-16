@@ -1,6 +1,10 @@
-var path = require("path");
+const path = require("path");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const rxPaths = require('rxjs/_esm5/path-mapping');
 
-module.exports = {
+const config = {
     entry: {
         main: path.join(__dirname, 'client/index.tsx'),
         login: path.join(__dirname, 'client/login.tsx')
@@ -11,13 +15,21 @@ module.exports = {
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
-        extensions: ['.ts', '.tsx', '.js'] // note if using webpack 1 you'd also need a '' in the array as well
+        extensions: ['.ts', '.tsx', '.js'],
+        alias: rxPaths()
     },
+    performance: {
+        hints: false
+    },
+    plugins: [
+        new CopyPlugin([{ from: path.join(__dirname, 'client/assets/img'), to: 'assets/img' }]),
+        new HtmlWebpackPlugin()
+    ],
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'awesome-typescript-loader',
+                loader: 'ts-loader',
                 exclude: /node_modules/
             },
             {
@@ -34,8 +46,33 @@ module.exports = {
             {
                 test:/\.(s*)css$/,
                 use:['style-loader','css-loader', 'sass-loader']
+            },
+            {
+                test: /\.(png|svg|jpg|gif|jpe?g)$/,
+                use: [
+                    {
+                        options: {
+                            name: '[name].[ext]',
+                            outputPath: 'assets/img/'
+                        },
+                        loader: 'file-loader'
+                    }
+                ]
             }
         ]
     },
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: "all"
+    //     },
+    // },
     devtool: 'inline-source-map'
+};
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'development') {
+        // config.plugins.push(new BundleAnalyzerPlugin());
+    }
+
+    return config;
 };

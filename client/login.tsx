@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as constants from "../constants.json";
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import constants from "../constants.json";
 
 interface LoginState {
     gameList: Array<string>
@@ -10,7 +10,7 @@ interface LoginState {
  * @class Login
  * @classdesc Game Login component
  * */
-export class Login extends React.Component<{}, LoginState>{
+export class Login extends Component<{}, LoginState>{
     private apiHost: string;
 
     constructor(props) {
