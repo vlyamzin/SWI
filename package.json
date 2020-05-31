@@ -4,9 +4,10 @@
   "description": "Twilight Imperium - Star Wars edition",
   "main": "index.js",
   "scripts": {
+    "tsc": "node_modules/.bin/tsc",
     "start": "npm run client && npm run build-server && nodemon --watch bin ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-server": "gulp build-server ",
+    "build-server": "tsc --project ./server/server.tsconfig.json",
     "watch-server-ts": "gulp watch-server",
     "nodemon-server": "npm run client && gulp copy-html && nodemon --watch bin ./bin/www.js",
     "client": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=development",

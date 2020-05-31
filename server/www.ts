@@ -1,5 +1,7 @@
 import {IndexRoute} from './routes';
 import express from 'express';
+import webpack from 'webpack';
+import config = require("../webpack.config.js");
 import {LoginRoute} from './routes/login';
 import {Server} from './server';
 import {db} from './db';
@@ -11,6 +13,7 @@ const path = require('path')
     , methodOverride = require('method-override')
     , errorHandler = require('errorhandler')
     , port = normalizePort(process.env.PORT || 8080)
+    , compiler = webpack(config)
     , constants = require('../constants.json');
 
 
@@ -37,6 +40,14 @@ export class StaticServer {
         this.config();
         this.routes();
         this.api();
+
+        new webpack.ProgressPlugin().apply(compiler);
+
+        compiler.run((err) => {
+          if (err) {
+              console.warn(err);
+          }
+        })
 
         this.server.listen(port, () => {
             console.log('Express server is running on port ' + port);

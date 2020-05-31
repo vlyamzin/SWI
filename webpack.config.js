@@ -25,6 +25,7 @@ const config = {
         new CopyPlugin([{ from: path.join(__dirname, 'client/assets/img'), to: 'assets/img' }]),
         new HtmlWebpackPlugin()
     ],
+    mode: "development",
     module: {
         rules: [
             {
@@ -69,10 +70,4 @@ const config = {
     devtool: 'inline-source-map'
 };
 
-module.exports = (env, argv) => {
-    if (argv.mode === 'development') {
-        // config.plugins.push(new BundleAnalyzerPlugin());
-    }
-
-    return config;
-};
+module.exports = config;
