@@ -41,13 +41,26 @@ export class StaticServer {
         this.routes();
         this.api();
 
-        new webpack.ProgressPlugin().apply(compiler);
+        compiler.watch({
+            // Example watchOptions
+          aggregateTimeout: 300,
+        }, (err, stats) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
 
-        compiler.run((err) => {
-          if (err) {
-              console.warn(err);
-          }
-        })
+            console.log(stats.toString({
+              chunks: false,
+              colors: true
+            }))
+        });
+
+        // compiler.run((err) => {
+        //   if (err) {
+        //       console.warn(err);
+        //   }
+        // })
 
         this.server.listen(port, () => {
             console.log('Express server is running on port ' + port);
