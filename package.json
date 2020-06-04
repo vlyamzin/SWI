@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-server": "tsc --project ./server/server.tsconfig.json && node ./bin/www.js",
     "client": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=development",
-    "client:prod": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=production"
+    "client:prod": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=production",
+    "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx client server"
   },
   "repository": {
     "type": "git",
@@ -34,12 +35,15 @@
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
     "body-parser": "1.17.1",
     "cookie-parser": "1.4.3",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^0.28.11",
     "debug": "2.6.3",
     "errorhandler": "1.5.0",
+    "eslint": "^7.1.0",
     "express": "4.15.2",
     "file-loader": "^6.0.0",
     "gulp": "3.9.1",
@@ -62,9 +66,7 @@
     "webpack-cli": "^3.3.11",
     "ws": "^2.2.1"
   },
-  "pre-commit": [
-    
-  ],
+  "pre-commit": [],
   "dependencies": {
     "@types/nano": "^6.4.6",
     "classnames": "^2.2.6",
