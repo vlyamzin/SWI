@@ -1,6 +1,6 @@
 import {races} from '../logic/models/races';
 import {colors} from '../logic/models/colors';
-import React, {Component} from 'react';
+import React, {Component, SyntheticEvent} from 'react';
 import {PlayerColorsEnum} from '../common/enums/player-colors.enum';
 import {RacesEnum} from '../common/enums/races.enum';
 import {Container} from 'typedi';
@@ -18,11 +18,11 @@ interface ILoginState {
  * @class
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */
-export class Login extends Component<{}, ILoginState>{
+export class Login extends Component<unknown, ILoginState>{
     private ps: PlayerService;
     private gs: GameState;
 
-    constructor(props) {
+    constructor(props: unknown) {
         super(props);
         this.state = {
             user: '',
@@ -41,8 +41,8 @@ export class Login extends Component<{}, ILoginState>{
      * @method render
      * @public
      * */
-    public render() {
-        const container = <div className={'login-form'}>
+    public render(): JSX.Element {
+        return <div className={'login-form'}>
             <label htmlFor="name">Name</label>
             <input type="text" id={'name'} value={this.state.user} onChange={e => this.onNameChanged(e)}/>
             <label htmlFor="color">Color</label>
@@ -57,10 +57,8 @@ export class Login extends Component<{}, ILoginState>{
                     return <option key={i[0]} value={i[0].toString()}>{i[1]}</option>
                 })}
             </select>
-            <button className={'submit'} onClick={this.submitPlayer.bind(this)}>Go</button>
+            <button className={'submit'} onClick={this.submitPlayer}>Go</button>
         </div>;
-
-        return container;
     }
 
     /**
@@ -71,8 +69,8 @@ export class Login extends Component<{}, ILoginState>{
      * @param event – DOM event
      * @private
      * */
-    private onNameChanged(event): void {
-        this.setState({user: event.target.value});
+    private onNameChanged(event: SyntheticEvent<HTMLInputElement>): void {
+        this.setState({user: event.currentTarget.value});
     }
 
     /**
@@ -83,8 +81,8 @@ export class Login extends Component<{}, ILoginState>{
      * @param event – DOM event
      * @private
      * */
-    private onColorChanged(event): void {
-        this.setState({color: event.target.value});
+    private onColorChanged(event: SyntheticEvent<HTMLSelectElement>): void {
+        this.setState({color: event.currentTarget.value});
     }
 
     /**
@@ -95,8 +93,10 @@ export class Login extends Component<{}, ILoginState>{
      * @param event – DOM event
      * @private
      * */
-    private onRaceChanged(event): void {
-        this.setState({race: event.target.value});
+    private onRaceChanged(event: SyntheticEvent<HTMLSelectElement>): void {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const race: RacesEnum = RacesEnum[event.currentTarget.value];
+        this.setState({race});
     }
 
     /**
@@ -106,14 +106,14 @@ export class Login extends Component<{}, ILoginState>{
      * @method submitPlayer
      * @private
      * */
-    private submitPlayer(): void {
+    private submitPlayer = async (): Promise<void> => {
         const {user, color, race} = this.state;
-        this.ps.create({
+        await this.ps.create({
             name: user,
             color: color,
             race: race
-        }).then(() => {
-            this.gs.createMap();
         });
+
+        this.gs.createMap();
     }
 }

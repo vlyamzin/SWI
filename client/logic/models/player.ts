@@ -28,7 +28,7 @@ export class Player {
         return this._race;
     }
 
-    public get tileList() {
+    public get tileList(): ITileImage[] {
         return this._tileList;
     }
 

@@ -4,7 +4,12 @@ export interface ICommunicationService {
 
 interface ISocketMessage {
     command: string,
-    data: any
+    data: ISocketMessageData,
+}
+
+interface ISocketMessageData {
+    role?: string,
+    userName?: string,
 }
 
 /**
@@ -38,7 +43,7 @@ class CommunicationService implements ICommunicationService {
     }
 
     private onConnectionOpen(): void {
-
+        console.log('Connection is opened');
     }
 
     /**
@@ -61,7 +66,9 @@ class CommunicationService implements ICommunicationService {
 
                 this.sendData({
                     command: 'register',
-                    data: this.userName
+                    data: {
+                        userName: this.userName
+                    }
                 });
                 break;
             case 'signed':
@@ -71,4 +78,4 @@ class CommunicationService implements ICommunicationService {
     }
 }
 
-export let communicationService: ICommunicationService = new CommunicationService();
+export const communicationService: ICommunicationService = new CommunicationService();

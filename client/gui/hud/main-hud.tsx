@@ -10,14 +10,14 @@ import {filter} from 'rxjs/operators/filter';
  * @class MainHUD
  * @classdesc MainHUD component. Is a base container for UI components. Located on the bottom of the screen
  * */
-export class MainHUD extends Component<{}, {}> implements IGameStateListener{
+export class MainHUD extends Component<unknown, unknown> implements IGameStateListener{
     GameStateListeners = new Set([GameStateEnum.MAP_CREATION]);
     private readonly hud: HTMLElement;
     private gameStateService: GameState;
     private playerService: PlayerService;
     private gameState: GameStateEnum;
 
-    constructor(props) {
+    constructor(props: unknown) {
         super(props);
         this.gameStateService = Container.get(GameState);
         this.playerService = Container.get(PlayerService);
@@ -38,7 +38,7 @@ export class MainHUD extends Component<{}, {}> implements IGameStateListener{
      * @method render
      * @public
      * */
-    public render() {
+    public render(): JSX.Element {
         return (
             <div id="hud">
                 <div className="main">

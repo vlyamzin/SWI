@@ -12,81 +12,85 @@ import {GameStateEnum} from './common/enums/game-state.enum';
 import {PlayerService} from './logic/services/player.service';
 import {filter} from 'rxjs/operators/filter';
 
-let imageList, game;
+class Game implements IGameStateListener {
+    GameStateListeners = new Set([
+        GameStateEnum.BOOTSTRAP,
+        GameStateEnum.PLAYER_CREATION,
+        GameStateEnum.MAP_CREATION
+    ]);
+    public state: GameState;
+    private id: number;
+    private width: number;
+    private height: number;
+    private board: IBoard;
+    private ps: PlayerService;
 
-module UI {
+    constructor() {
+        imageList = new ImagePreloader<ITileImage>(TileImages.tiles);
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.state = Container.get(GameState);
+        this.ps = Container.get(PlayerService);
 
-    class Game implements IGameStateListener {
-        GameStateListeners = new Set([
-            GameStateEnum.BOOTSTRAP,
-            GameStateEnum.PLAYER_CREATION,
-            GameStateEnum.MAP_CREATION
-        ]);
-        public state: GameState;
-        private id: number;
-        private width: number;
-        private height: number;
-        private board: IBoard;
-        private ps: PlayerService;
-
-        constructor() {
-            const loginView = document.getElementById('login');
-            imageList = new ImagePreloader<ITileImage>(TileImages.tiles);
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            this.state = Container.get(GameState);
-            this.ps = Container.get(PlayerService);
-
-
-            this.state.state$
-                .pipe(filter((gs: GameStateEnum) => {
-                    return this.GameStateListeners.has(gs);
-                }))
-                .subscribe((s) => {
-                    switch (s) {
-                        case GameStateEnum.BOOTSTRAP:
-                            /*@TODO show loading screen here */
-                            console.log('Game is starting');
-                            break;
-                        case GameStateEnum.PLAYER_CREATION:
-                            if (this.ps.player) {
-                                this.state.createMap();
-                            } else {
-                                ReactDOM.render(
-                                    <Login/>,
-                                    loginView
-                                );
-                            }
-                            break;
-                        case GameStateEnum.MAP_CREATION:
-                            loginView.classList.add('hidden');
-                            ReactDOM.render(
-                                <MainHUD/>,
-                                document.getElementsByClassName('hud-container')[0]
-                            );
-                            break;
-                    }
-                });
-
-
-            this.state.createPlayer();
-            window.addEventListener('resize', this.resizeCanvas.bind(this), false);
-            imageList.imageLoaded.then(() => {
-                this.board = new Board(this.width, this.height);
-            });
-        }
-
-        /**
-         * Resize the whole screen
-         * */
-        private resizeCanvas(): void {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-            this.board.draw(this.width, this.height);
-        }
+        this.init().catch(e => console.warn(e));
     }
 
-    game = new Game();
+    private async init(): Promise<void> {
+        this.manageGameState();
+        this.state.createPlayer();
+        window.addEventListener('resize', this.resizeCanvas.bind(this), false);
+        await imageList.imageLoaded;
+        this.board = new Board(this.width, this.height);
+    }
 
+    /**
+     * Observe the game state change and render the appropriate components
+     */
+    private manageGameState(): void {
+        // TODO remove this. Login form must be a separate page/route
+        const loginView = document.getElementById('login');
+
+        this.state.state$
+          .pipe(filter((gs: GameStateEnum) => {
+              return this.GameStateListeners.has(gs);
+          }))
+          .subscribe((s) => {
+              switch (s) {
+                  case GameStateEnum.BOOTSTRAP:
+                      /*@TODO show loading screen here */
+                      console.log('Game is starting');
+                      break;
+                  case GameStateEnum.PLAYER_CREATION:
+                      if (this.ps.player) {
+                          this.state.createMap();
+                      } else {
+                          ReactDOM.render(
+                            <Login/>,
+                            loginView
+                          );
+                      }
+                      break;
+                  case GameStateEnum.MAP_CREATION:
+                      loginView.classList.add('hidden');
+                      ReactDOM.render(
+                        <MainHUD/>,
+                        document.getElementsByClassName('hud-container')[0]
+                      );
+                      break;
+              }
+          });
+    }
+
+    /**
+     * Resize the whole screen
+     * */
+    private resizeCanvas(): void {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.board.draw(this.width, this.height);
+    }
 }
+
+let imageList: ImagePreloader<ITileImage>;
+const game = new Game();
 export {imageList, game};     // it is singleton

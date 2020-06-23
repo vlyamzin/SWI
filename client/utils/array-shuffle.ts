@@ -7,9 +7,10 @@
  * @public
  * */
 export function shuffle<T>(array: Array<T>): Array<T> {
-    let rand, index = -1,
-        length = array.length,
-        result = Array(length);
+    let rand: number, index = -1;
+    const length = array.length;
+    const result = Array<T>(length);
+
     while (++index < length) {
         rand = Math.floor(Math.random() * (index + 1));
         result[index] = result[rand];

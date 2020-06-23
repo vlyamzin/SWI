@@ -39,11 +39,11 @@ export class Board implements IGameStateListener{
      * @param {string} - The default background color
      * @protected
      * */
-    protected backgroundColor: string = "#000";
+    protected backgroundColor = "#000";
     protected boardCenter: IPoint;
     protected hexSize: number;
     protected hexArray: Array<Hex> =[];
-    protected mouseIsDown: boolean = false;
+    protected mouseIsDown = false;
     protected prevX: number;
     protected prevY: number;
     private gameStateService: GameState;
@@ -126,17 +126,17 @@ export class Board implements IGameStateListener{
                     if (j === 0) {
                         // find first hex from previous ring
                         // @TODO use ES6 find instead lodash
-                        let startHex = this.hexArray.find( (h: Hex) => {
+                        const startHex = this.hexArray.find( (h: Hex) => {
                             return h.getMapCoords.a === GameMap.sixMemberMap[i-1][j].a && h.getMapCoords.b === GameMap.sixMemberMap[i-1][j].b;
                         });
 
-                        let newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
+                        const newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
                         // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
                         hex = this.createHex(i, j, newCoords);
                         this.hexArray.push(hex);
                     } else {
                         // hexes in the same ring
-                        let newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
+                        const newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
                         // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
                         hex = this.createHex(i, j, newCoords);
                         this.hexArray.push(hex);
@@ -160,7 +160,7 @@ export class Board implements IGameStateListener{
      * @return IMapCoord
      * */
     public pixelToHex(a: number, b: number): IMapCoord {
-        let _a = a * 2/3 / this.hexSize,
+        const _a = a * 2/3 / this.hexSize,
             _b = (-a/3 + Math.sqrt(3)/3 * b) / this.hexSize;
 
         return Hex.hexRound(<IMapCoord>{a: _a, b: _b});

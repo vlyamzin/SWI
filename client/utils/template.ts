@@ -22,7 +22,7 @@ export class Template {
         const t = document.createElement('template');
         const parent = this.getNodeInstance(node);
 
-        for (let elem of template) {
+        for (const elem of template) {
             t.innerHTML += elem;
         }
 
@@ -34,33 +34,35 @@ export class Template {
         }
     }
 
-    public static attachEvents(events: IViewEvents, context: any): void {
-        for(let key in events) {
-            if (events.hasOwnProperty(key)) {
+    public static attachEvents(events: IViewEvents, context: unknown): void {
+        for(const key in events) {
+            if (Object.prototype.hasOwnProperty.call(events, key)) {
                 const selectorType = key.charAt(0);
-                let node;
+                let node: HTMLElement | Element;
+                let elemList: HTMLCollectionOf<Element>;
 
                 switch (selectorType) {
                     case '.':
-                        node = document.getElementsByClassName(key.substring(1, key.length));
-                        if (node && node.length > 0) {
-                            node = node[0];
+                        elemList = document.getElementsByClassName(key.substring(1, key.length));
+                        if (elemList && elemList.length > 0) {
+                            node = elemList[0];
                         }
                         break;
                     case '#':
                         node = document.getElementById(key.substring(1, key.length));
                         break;
                     default:
-                        node = document.getElementsByTagName(key);
-                        if (node && node.length > 0) {
-                            node = node[0];
+                        elemList = document.getElementsByTagName(key);
+                        if (elemList && elemList.length > 0) {
+                            node = elemList[0];
                         }
                 }
 
                 if (node) {
-                    for (let evt of events[key]) {
+                    for (const evt of events[key]) {
                         const k = Object.keys(evt)[0];
-                        node.addEventListener(k, context[evt[k]].bind(context), false);
+                        const handler = context[evt[k]] as () => unknown;
+                        node.addEventListener(k, handler.bind(context), false);
                     }
                 }
             }
@@ -73,24 +75,23 @@ export class Template {
            return node;
         } else {
             try {
-                let instance;
-
-                instance = document.getElementById(node);
+                const instance: HTMLElement = document.getElementById(node);
+                let nodeList: HTMLCollectionOf<Element>;
 
                 if (instance) {
                     return instance;
                 }
 
-                instance = document.getElementsByClassName(node);
+                nodeList = document.getElementsByClassName(node);
 
-                if (instance && instance.length > 0) {
-                    return instance[0];
+                if (nodeList && nodeList.length > 0) {
+                    return nodeList[0];
                 }
 
-                instance = document.getElementsByTagName(node);
+                nodeList = document.getElementsByTagName(node);
 
-                if (instance && instance.length > 0) {
-                    return instance[0];
+                if (nodeList && nodeList.length > 0) {
+                    return nodeList[0];
                 }
 
                 throw new Error('Can\'t find parent node. Element was added to <body>');

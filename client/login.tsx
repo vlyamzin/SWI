@@ -10,10 +10,10 @@ interface LoginState {
  * @class Login
  * @classdesc Game Login component
  * */
-export class Login extends Component<{}, LoginState>{
+export class Login extends Component<unknown, LoginState>{
     private apiHost: string;
 
-    constructor(props) {
+    constructor(props: unknown) {
         super(props);
 
         this.state = {
@@ -22,14 +22,15 @@ export class Login extends Component<{}, LoginState>{
         this.apiHost = `${constants['appUrl']}:${constants['appPortHttp']}`;
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.getGameList()
             .then((data) => {
                 this.setState({gameList: data})
             })
+            .catch(e => console.error(e));
     }
 
-    render() {
+    render(): JSX.Element {
         return <div>
             <h1>Welcome to Start Wars Imperium</h1>
             <h3>Select a Game</h3>
@@ -51,7 +52,7 @@ export class Login extends Component<{}, LoginState>{
         return fetch(`${this.apiHost}/games`)
             .then((response) => {
                 if (response.ok) {
-                    return response.json();
+                    return response.json() as Promise<string[]>;
                 }
 
                 console.error('Can not load game list');

@@ -3,10 +3,6 @@ import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Service} from 'typedi';
 
-export interface IGameState {
-
-}
-
 export interface IGameStateListener {
     GameStateListeners: Set<GameStateEnum>;
 }
@@ -16,7 +12,7 @@ export interface IGameStateListener {
  * @classdesc Keep information about GameState
  * */
 @Service()
-export class GameState implements IGameState {
+export class GameState {
     private state: BehaviorSubject<GameStateEnum>;
     public state$: Observable<GameStateEnum>;
 

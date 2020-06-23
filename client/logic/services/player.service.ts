@@ -11,8 +11,8 @@ export interface IPlayerCreateData {
     tileList?: Array<ITileImage>
 }
 
-export interface IPlaterService {
-    create: Function
+export interface IPlayerService {
+    create: (data: IPlayerCreateData) => Promise<Player>
 }
 
 /**
@@ -20,7 +20,7 @@ export interface IPlaterService {
  * @classdesc A service that creates, collects and stores player's data
  * */
 @Service()
-export class PlayerService implements IPlaterService{
+export class PlayerService implements IPlayerService{
     private _player: Player;
 
     constructor() {
