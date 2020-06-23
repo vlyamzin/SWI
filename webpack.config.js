@@ -23,7 +23,16 @@ const config = {
     },
     plugins: [
         new CopyPlugin([{ from: path.join(__dirname, 'client/assets/img'), to: 'assets/img' }]),
-        new HtmlWebpackPlugin()
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: 'client/index.html',
+            chunks: ['main']
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'login.html',
+            template: 'client/login.html',
+            chunks: ['login']
+        })
     ],
     mode: "development",
     module: {
@@ -67,7 +76,7 @@ const config = {
     //         chunks: "all"
     //     },
     // },
-    devtool: 'inline-source-map'
+    devtool: 'source-map'
 };
 
 module.exports = config;
