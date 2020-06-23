@@ -1,9 +1,7 @@
 {
   "env": {
     "es6": true,
-    "node": true,
     "browser": true,
-    "commonjs": true,
     "amd": true
   },
   "extends": [
@@ -15,7 +13,7 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json", "./server/server.tsconfig.json"],
+    "project": ["./tsconfig.json"],
     "tsconfigRootDir": "."
   },
   "plugins": ["@typescript-eslint", "react"],
