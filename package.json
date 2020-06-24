@@ -1,6 +1,6 @@
 {
   "name": "swi",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Twilight Imperium - Star Wars edition",
   "main": "index.js",
   "scripts": {
