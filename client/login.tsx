@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import constants from "../constants.json";

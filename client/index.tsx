@@ -1,16 +1,17 @@
+import 'reflect-metadata';
 import {IBoard, Board} from './gui/board';
 import {ImagePreloader} from './utils/imagePreloader';
 import {TileImages, ITileImage} from './gui/tileImages';
 import {MainHUD} from './gui/hud/main-hud';
 import './assets/styles/main.scss'
 import {GameState, IGameStateListener} from './logic/game-state';
-import {Container} from 'typedi';
 import {Login} from './gui/login';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {GameStateEnum} from './common/enums/game-state.enum';
 import {PlayerService} from './logic/services/player.service';
 import {filter} from 'rxjs/operators/filter';
+import {container} from 'tsyringe';
 
 class Game implements IGameStateListener {
     GameStateListeners = new Set([
@@ -29,8 +30,8 @@ class Game implements IGameStateListener {
         imageList = new ImagePreloader<ITileImage>(TileImages.tiles);
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-        this.state = Container.get(GameState);
-        this.ps = Container.get(PlayerService);
+        this.state = container.resolve(GameState);
+        this.ps = container.resolve(PlayerService);
 
         this.init().catch(e => console.warn(e));
     }
@@ -64,18 +65,19 @@ class Game implements IGameStateListener {
                       if (this.ps.player) {
                           this.state.createMap();
                       } else {
-                          ReactDOM.render(
-                            <Login/>,
-                            loginView
-                          );
+                          // TODO navigate to login screen
+                          // ReactDOM.render(
+                          //   <Login/>,
+                          //   loginView
+                          // );
                       }
                       break;
                   case GameStateEnum.MAP_CREATION:
                       loginView.classList.add('hidden');
-                      ReactDOM.render(
-                        <MainHUD/>,
-                        document.getElementsByClassName('hud-container')[0]
-                      );
+                      // ReactDOM.render(
+                      //   <MainHUD/>,
+                      //   document.getElementsByClassName('hud-container')[0]
+                      // );
                       break;
               }
           });

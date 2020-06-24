@@ -2,9 +2,10 @@ import {Hex, IPoint} from "./hex"
 import {GameMap, IMapCoord} from "../logic/map"
 import {imageList} from '../index';
 import {GameState, IGameStateListener} from '../logic/game-state';
-import {Container} from 'typedi';
+// import {Container} from 'typedi';
 import {GameStateEnum} from '../common/enums/game-state.enum';
 import {filter} from 'rxjs/operators/filter';
+import {autoInjectable, container} from 'tsyringe';
 
 
 export interface IBoard {
@@ -16,7 +17,7 @@ export interface IBoard {
  * @class
  * @classdesc The main canvas
  * */
-export class Board implements IGameStateListener{
+export class Board implements IGameStateListener {
     /**
      * @param {Set} – Describes what GameState statuses the class should subscribe for
      * @public
@@ -49,8 +50,10 @@ export class Board implements IGameStateListener{
     private gameStateService: GameState;
     private gameState: GameStateEnum;
 
-    constructor(protected width: number, protected height: number) {
-        this.gameStateService = Container.get(GameState);
+    constructor(protected width: number,
+                protected height: number,
+                ) {
+        this.gameStateService = container.resolve(GameState);
         this.canvas = <HTMLCanvasElement>document.getElementById('game');
         this.context = this.canvas.getContext('2d');
         this.context.fillStyle = this.backgroundColor;

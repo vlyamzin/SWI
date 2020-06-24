@@ -1,8 +1,8 @@
-import {Service} from 'typedi';
 import {Player} from '../models/player';
 import {shuffle} from '../../utils/array-shuffle';
 import {ITileImage, TileImages} from '../../gui/tileImages';
 import {TileTypeEnum} from '../../common/enums/tile-type.enum';
+import {singleton} from 'tsyringe';
 
 export interface IPlayerCreateData {
     name: string,
@@ -19,7 +19,7 @@ export interface IPlayerService {
  * @class PlayerService
  * @classdesc A service that creates, collects and stores player's data
  * */
-@Service()
+@singleton()
 export class PlayerService implements IPlayerService{
     private _player: Player;
 

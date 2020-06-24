@@ -3,7 +3,7 @@ import {colors} from '../logic/models/colors';
 import React, {Component, SyntheticEvent} from 'react';
 import {PlayerColorsEnum} from '../common/enums/player-colors.enum';
 import {RacesEnum} from '../common/enums/races.enum';
-import {Container} from 'typedi';
+// import {Container} from 'typedi';
 import {PlayerService} from '../logic/services/player.service';
 import {GameState} from '../logic/game-state';
 
@@ -19,19 +19,15 @@ interface ILoginState {
  * @classdesc The login component. Manage creation and signing-in processes of the player.
  * */
 export class Login extends Component<unknown, ILoginState>{
-    private ps: PlayerService;
-    private gs: GameState;
-
-    constructor(props: unknown) {
+    constructor(props: unknown,
+                private ps: PlayerService,
+                private gs: GameState) {
         super(props);
         this.state = {
             user: '',
             color: colors.get(PlayerColorsEnum.Red).hash,
             race: RacesEnum.Wookiees
         };
-
-        this.ps = Container.get(PlayerService);
-        this.gs = Container.get(GameState);
     }
 
     /**

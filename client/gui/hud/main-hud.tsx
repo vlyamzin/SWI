@@ -1,5 +1,5 @@
 import {GameState, IGameStateListener} from '../../logic/game-state';
-import {Container} from 'typedi';
+// import {Container} from 'typedi';
 import React, {Component} from 'react';
 import {GameStateEnum} from '../../common/enums/game-state.enum';
 import {PlayerService} from '../../logic/services/player.service';
@@ -13,14 +13,12 @@ import {filter} from 'rxjs/operators/filter';
 export class MainHUD extends Component<unknown, unknown> implements IGameStateListener{
     GameStateListeners = new Set([GameStateEnum.MAP_CREATION]);
     private readonly hud: HTMLElement;
-    private gameStateService: GameState;
-    private playerService: PlayerService;
     private gameState: GameStateEnum;
 
-    constructor(props: unknown) {
+    constructor(props: unknown,
+                private gameStateService: GameState,
+                private playerService: PlayerService) {
         super(props);
-        this.gameStateService = Container.get(GameState);
-        this.playerService = Container.get(PlayerService);
 
         this.gameStateService.state$
             .pipe(filter((gs: GameStateEnum) => {

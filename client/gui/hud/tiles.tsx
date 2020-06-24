@@ -2,7 +2,6 @@ import React, {Component, SyntheticEvent} from 'react';
 import ReactDOM from 'react-dom';
 import {ITileImage} from '../tileImages';
 import {TilePreviewer} from '../tile-previewer';
-import {Container} from 'typedi';
 import {CacheService} from '../../logic/services/cache.service';
 
 export interface ITilesProps {
@@ -15,10 +14,9 @@ export interface ITilesProps {
  * @classdesc Component that represents a list of tiles. Used in the HUD
  * */
 export class Tiles extends Component<ITilesProps, unknown> {
-    private cacheService: CacheService;
-    constructor(props: ITilesProps) {
+    constructor(props: ITilesProps,
+                private cacheService: CacheService) {
         super(props);
-        this.cacheService = Container.get(CacheService);
     }
 
     /**

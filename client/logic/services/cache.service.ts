@@ -1,12 +1,13 @@
-import {Service} from 'typedi';
+// import {Service} from 'typedi';
 import {ITileImage} from '../../gui/tileImages';
 import {IMapCoord} from '../map';
+import {singleton} from 'tsyringe';
 
 /**
  * @class
  * @classdesc The main service to cache the game info such tiles on HUD or part of the map which was selected
  * */
-@Service()
+@singleton()
 export class CacheService {
     /**
      * @param {ITileImage} – Cached tile which was selected from the HUD

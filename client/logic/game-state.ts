@@ -1,7 +1,7 @@
 import {GameStateEnum} from '../common/enums/game-state.enum';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Service} from 'typedi';
+import {singleton} from 'tsyringe';
 
 export interface IGameStateListener {
     GameStateListeners: Set<GameStateEnum>;
@@ -11,7 +11,7 @@ export interface IGameStateListener {
  * @class GameState
  * @classdesc Keep information about GameState
  * */
-@Service()
+@singleton()
 export class GameState {
     private state: BehaviorSubject<GameStateEnum>;
     public state$: Observable<GameStateEnum>;
