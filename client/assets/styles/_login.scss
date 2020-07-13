@@ -1,0 +1,35 @@
+#login {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0, 0.2);
+
+    &.hidden {
+        display: none;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            color: aliceblue;
+            font-size: 20px;
+        }
+
+        input, select {
+            width: 270px;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        input {
+            width: 250px;
+            padding: 10px;
+        }
+    }
+}

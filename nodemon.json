@@ -1,0 +1,8 @@
+{
+  "watch": ["server"],
+  "ignore": ["bin"],
+  "delay": 2500,
+  "verbose": true,
+  "exec": "npm run build-server",
+  "ext": "ts"
+}
