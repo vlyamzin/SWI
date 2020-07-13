@@ -13,7 +13,7 @@ const path = require('path')
     , methodOverride = require('method-override')
     , errorHandler = require('errorhandler')
     , port = normalizePort(process.env.PORT || 8080)
-    , compiler = webpack(config)
+    , compiler = webpack(config(process.env.NODE_ENV))
     , constants = require('../constants.json');
 
 
@@ -42,25 +42,23 @@ export class StaticServer {
         this.api();
 
         compiler.watch({
-            // Example watchOptions
-          aggregateTimeout: 300,
+            aggregateTimeout: 300,
+            ignored: /node_modules/
         }, (err, stats) => {
             if (err) {
               console.error(err);
               return;
             }
 
+            console.log(`\n**************************
+            \nWebpack rebuild...
+            \n**************************\n`);
+
             console.log(stats.toString({
               chunks: false,
               colors: true
             }))
         });
-
-        // compiler.run((err) => {
-        //   if (err) {
-        //       console.warn(err);
-        //   }
-        // })
 
         this.server.listen(port, () => {
             console.log('Express server is running on port ' + port);

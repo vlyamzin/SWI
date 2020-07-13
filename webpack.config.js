@@ -4,6 +4,30 @@ const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rxPaths = require('rxjs/_esm5/path-mapping');
 
+function enableAnalyzer(flag, cb) {
+    let res;
+
+    res = flag ? new BundleAnalyzerPlugin () : null;
+
+    if (cb && typeof cb === "function") {
+        cb(res);
+    } else {
+        return res;
+    }
+}
+
+function getEnvironment(env) {
+    if (!env) {
+        return 'none';
+    }
+
+    if (env.production) {
+        return 'production';
+    }
+
+    return env;
+}
+
 const config = {
     entry: {
         main: path.join(__dirname, 'client/index.tsx'),
@@ -34,7 +58,6 @@ const config = {
             chunks: ['login']
         })
     ],
-    mode: "development",
     module: {
         rules: [
             {
@@ -71,12 +94,17 @@ const config = {
             }
         ]
     },
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: "all"
-    //     },
-    // },
     devtool: 'source-map'
 };
 
-module.exports = config;
+module.exports = env => {
+    config.mode = getEnvironment(env);
+
+    enableAnalyzer(config.mode === 'development', (plugin) => {
+        if (plugin) {
+            config.plugins.push(plugin);
+        }
+    });
+
+    return config;
+};

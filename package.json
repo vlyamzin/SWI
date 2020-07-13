@@ -9,9 +9,10 @@
     "start": "npm run build-server",
     "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-server": "tsc --project ./server/server.tsconfig.json && node ./bin/www.js",
-    "client": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=development",
-    "client:prod": "./node_modules/.bin/webpack --config ./webpack.config.js --mode=production",
+    "build-server": "tsc --project ./server/server.tsconfig.json && NODE_ENV=development node ./bin/www.js",
+    "build-server:prod": "tsc --project ./server/server.tsconfig.json && NODE_ENV=production node ./bin/www.js",
+    "client": "./node_modules/.bin/webpack --config ./webpack.config.js --env.development",
+    "client:prod": "./node_modules/.bin/webpack --config ./webpack.config.js --env.production",
     "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx client"
   },
   "repository": {
