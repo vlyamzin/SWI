@@ -1,11 +1,11 @@
 import {Hex, IPoint} from "./hex"
 import {GameMap, IMapCoord} from "../logic/map"
 import {imageList} from '../index';
-import * as lodash from "lodash";
 import {GameState, IGameStateListener} from '../logic/game-state';
-import {Container} from 'typedi';
+// import {Container} from 'typedi';
 import {GameStateEnum} from '../common/enums/game-state.enum';
-import {filter} from 'rxjs/operators';
+import {filter} from 'rxjs/operators/filter';
+import {autoInjectable, container} from 'tsyringe';
 
 
 export interface IBoard {
@@ -17,7 +17,7 @@ export interface IBoard {
  * @class
  * @classdesc The main canvas
  * */
-export class Board implements IGameStateListener{
+export class Board implements IGameStateListener {
     /**
      * @param {Set} – Describes what GameState statuses the class should subscribe for
      * @public
@@ -40,18 +40,20 @@ export class Board implements IGameStateListener{
      * @param {string} - The default background color
      * @protected
      * */
-    protected backgroundColor: string = "#000";
+    protected backgroundColor = "#000";
     protected boardCenter: IPoint;
     protected hexSize: number;
     protected hexArray: Array<Hex> =[];
-    protected mouseIsDown: boolean = false;
+    protected mouseIsDown = false;
     protected prevX: number;
     protected prevY: number;
     private gameStateService: GameState;
     private gameState: GameStateEnum;
 
-    constructor(protected width: number, protected height: number) {
-        this.gameStateService = Container.get(GameState);
+    constructor(protected width: number,
+                protected height: number,
+                ) {
+        this.gameStateService = container.resolve(GameState);
         this.canvas = <HTMLCanvasElement>document.getElementById('game');
         this.context = this.canvas.getContext('2d');
         this.context.fillStyle = this.backgroundColor;
@@ -127,17 +129,17 @@ export class Board implements IGameStateListener{
                     if (j === 0) {
                         // find first hex from previous ring
                         // @TODO use ES6 find instead lodash
-                        let startHex = lodash.find(this.hexArray, (h: Hex) => {
+                        const startHex = this.hexArray.find( (h: Hex) => {
                             return h.getMapCoords.a === GameMap.sixMemberMap[i-1][j].a && h.getMapCoords.b === GameMap.sixMemberMap[i-1][j].b;
                         });
 
-                        let newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
+                        const newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
                         // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
                         hex = this.createHex(i, j, newCoords);
                         this.hexArray.push(hex);
                     } else {
                         // hexes in the same ring
-                        let newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
+                        const newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
                         // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
                         hex = this.createHex(i, j, newCoords);
                         this.hexArray.push(hex);
@@ -161,7 +163,7 @@ export class Board implements IGameStateListener{
      * @return IMapCoord
      * */
     public pixelToHex(a: number, b: number): IMapCoord {
-        let _a = a * 2/3 / this.hexSize,
+        const _a = a * 2/3 / this.hexSize,
             _b = (-a/3 + Math.sqrt(3)/3 * b) / this.hexSize;
 
         return Hex.hexRound(<IMapCoord>{a: _a, b: _b});
@@ -180,7 +182,7 @@ export class Board implements IGameStateListener{
             /**
              * zoom in/zoom out
              * */
-            if (event.wheelDelta > 0) {
+            if (event.deltaY > 0) {
                 this.hexSize = this.hexSize * 1.12;
             } else {
                 this.hexSize = this.hexSize / 1.12;

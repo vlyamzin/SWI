@@ -1,13 +1,12 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import * as classNames from 'classnames';
+import React, {Component, SyntheticEvent} from 'react'
+import ReactDOM from 'react-dom'
 import {ITileImage} from './tileImages';
 
 export interface ITilePreviewerProps {
     parent: DOMRect
     tile: ITileImage,
-    onSelect?: Function;
-    onCancel?: Function;
+    onSelect?: (t: ITileImage) => void;
+    onCancel?: () => void;
 }
 
 interface IState {
@@ -18,8 +17,8 @@ interface IState {
  * @class TilePreviewer
  * @classdesc Component that shows a tile in a separate popup window
  * */
-export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> {
-    constructor(props) {
+export class TilePreviewer extends Component<ITilePreviewerProps, IState> {
+    constructor(props: ITilePreviewerProps) {
         super(props);
         this.state = {
             isAnimated: false
@@ -33,7 +32,7 @@ export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> 
      * @method componentDidMount
      * @public
      * */
-    componentDidMount() {
+    componentDidMount(): void {
         /* change state after animation is finished */
         setTimeout(() => {
             this.setState({isAnimated: true})
@@ -43,9 +42,12 @@ export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> 
     /**
      * React component default method. Render a template
      * */
-    render() {
+    render(): JSX.Element {
+        const className = `preview-tile ${this.state.isAnimated ? 'preview': ''}`;
         return (
-            <div className={classNames('preview-tile', {'preview': this.state.isAnimated})} style={{
+            <div
+              className={className}
+              style={{
                 top: this.props.parent.top,
                 left: this.props.parent.left,
                 width: this.props.parent.width,
@@ -66,7 +68,7 @@ export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> 
      * @method destroy
      * @public
      * */
-    destroy() {
+    destroy(): void {
         this.setState({isAnimated: false});
         ReactDOM.render(null, document.getElementById('preview'));
     }
@@ -80,7 +82,7 @@ export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> 
      * @param {any} event – DOM Event
      * @private
      * */
-    private submitTile(tile: ITileImage, event): void {
+    private submitTile(tile: ITileImage, event: SyntheticEvent<HTMLDivElement>): void {
         event.stopPropagation();
         if (this.props.onSelect) {
             this.props.onSelect(tile);
@@ -96,7 +98,7 @@ export class TilePreviewer extends React.Component<ITilePreviewerProps, IState> 
      * @param {any} event – DOM Event
      * @private
      * */
-    private cancelSelection(event): void {
+    private cancelSelection(event: SyntheticEvent<HTMLDivElement>): void {
         event.stopPropagation();
         if (this.props.onCancel) {
             this.props.onCancel();

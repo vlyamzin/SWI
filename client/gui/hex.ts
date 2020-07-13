@@ -23,7 +23,7 @@ export class Hex {
     private readonly shiftY: number;
 
     constructor(private center: IPoint,
-                private size,
+                private size: number,
                 private mapCoords: IMapCoord,
                 private tile?: ITileImage,
                 private highlight?: boolean) {
@@ -73,7 +73,7 @@ export class Hex {
      * @public
      * */
     public findNeighborCenterCoords(curHex:IMapCoord, newHex: IMapCoord, oldCenter: IPoint): IPoint {
-        let center: IPoint = {
+        const center: IPoint = {
             x: null,
             y: null
         };
@@ -216,7 +216,7 @@ export class Hex {
             ry = Math.round(coord.y),
             rz = Math.round(coord.z);
 
-        let xDiff = Math.abs(rx - coord.x),
+        const xDiff = Math.abs(rx - coord.x),
             yDiff = Math.abs(ry - coord.y),
             zDiff = Math.abs(rz - coord.z);
 
@@ -255,8 +255,8 @@ export class Hex {
      * @private
      * */
     private hexCorner(i: number): IPoint {
-        let angleDeg = 60 * i;
-        let angleRad = Math.PI/180 * angleDeg;
+        const angleDeg = 60 * i;
+        const angleRad = Math.PI/180 * angleDeg;
 
         return <IPoint>{
             x: this.center.x + this.size * Math.cos(angleRad),

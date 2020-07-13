@@ -1,26 +1,24 @@
 import {GameState, IGameStateListener} from '../../logic/game-state';
-import {Container} from 'typedi';
-import * as React from 'react';
+// import {Container} from 'typedi';
+import React, {Component} from 'react';
 import {GameStateEnum} from '../../common/enums/game-state.enum';
 import {PlayerService} from '../../logic/services/player.service';
 import {Tiles} from './tiles';
-import {filter} from 'rxjs/operators';
+import {filter} from 'rxjs/operators/filter';
 
 /**
  * @class MainHUD
  * @classdesc MainHUD component. Is a base container for UI components. Located on the bottom of the screen
  * */
-export class MainHUD extends React.Component<{}, {}> implements IGameStateListener{
+export class MainHUD extends Component<unknown, unknown> implements IGameStateListener{
     GameStateListeners = new Set([GameStateEnum.MAP_CREATION]);
     private readonly hud: HTMLElement;
-    private gameStateService: GameState;
-    private playerService: PlayerService;
     private gameState: GameStateEnum;
 
-    constructor(props) {
+    constructor(props: unknown,
+                private gameStateService: GameState,
+                private playerService: PlayerService) {
         super(props);
-        this.gameStateService = Container.get(GameState);
-        this.playerService = Container.get(PlayerService);
 
         this.gameStateService.state$
             .pipe(filter((gs: GameStateEnum) => {
@@ -38,7 +36,7 @@ export class MainHUD extends React.Component<{}, {}> implements IGameStateListen
      * @method render
      * @public
      * */
-    public render() {
+    public render(): JSX.Element {
         return (
             <div id="hud">
                 <div className="main">

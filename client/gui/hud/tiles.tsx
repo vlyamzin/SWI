@@ -1,9 +1,7 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as classNames from 'classnames';
+import React, {Component, SyntheticEvent} from 'react';
+import ReactDOM from 'react-dom';
 import {ITileImage} from '../tileImages';
 import {TilePreviewer} from '../tile-previewer';
-import {Container} from 'typedi';
 import {CacheService} from '../../logic/services/cache.service';
 
 export interface ITilesProps {
@@ -15,18 +13,17 @@ export interface ITilesProps {
  * @class Tiles
  * @classdesc Component that represents a list of tiles. Used in the HUD
  * */
-export class Tiles extends React.Component<ITilesProps, {}> {
-    private cacheService: CacheService;
-    constructor(props) {
+export class Tiles extends Component<ITilesProps, unknown> {
+    constructor(props: ITilesProps,
+                private cacheService: CacheService) {
         super(props);
-        this.cacheService = Container.get(CacheService);
     }
 
     /**
      * React component default method. Render a template
      * @public
      * */
-    render() {
+    render(): JSX.Element[] {
         return (
             this.getTiles()
         )
@@ -42,10 +39,10 @@ export class Tiles extends React.Component<ITilesProps, {}> {
     private getTiles() {
         return this.props.tiles.map((tile: ITileImage, i) => {
             return <div key={tile.id}
-                        className={classNames('hud-tiles-card', {sorted: this.isRaceTile(i)})}
+                        className={'hud-tiles-card'}
                         style={{
                             backgroundImage: 'url(' + tile.src + ')',
-                            transform: 'translateX(' + (-i / 2 * 250 + 30) + 'px)',
+                            transform: 'translateX(' + String(-i / 2 * 250 + 30) + 'px)',
                         }}
                         onClick={(e) => {
                             this.selectTile(e, tile)
@@ -63,14 +60,14 @@ export class Tiles extends React.Component<ITilesProps, {}> {
      * @param {ITileImage} tile – tile object
      * @private
      * */
-    private selectTile(event, tile: ITileImage): void {
+    private selectTile(event: SyntheticEvent, tile: ITileImage): void {
         event.stopPropagation();
-        event.target.parentElement.classList.add('preview');
+        event.currentTarget.parentElement.classList.add('preview');
 
         ReactDOM.render(
             <TilePreviewer
-                parent={event.target.getBoundingClientRect()}
-                tile={tile} onSelect={this.cacheTile.bind(this)}></TilePreviewer>,
+                parent={event.currentTarget.getBoundingClientRect()}
+                tile={tile} onSelect={this.cacheTile}></TilePreviewer>,
             document.getElementById('preview')
         )
     }
@@ -101,7 +98,7 @@ export class Tiles extends React.Component<ITilesProps, {}> {
      * @param {ITileImage} tile – tile object
      * @private
      * */
-    private cacheTile(tile: ITileImage): void {
+    private cacheTile = (tile: ITileImage): void => {
         this.cacheService.tile = tile;
     }
 }

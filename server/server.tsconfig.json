@@ -2,17 +2,17 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2016",
-    "sourceMap": true,
+    "sourceMap": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["dom", "es2015"],
-    "jsx": "react"
+    "outDir": "../bin"
   },
-  "include":  ["./client"],
+  "include":  ["**/*.ts"],
   "types" : ["express", "lodash", "node", "ws"],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "client/*.ts"
   ]
 }

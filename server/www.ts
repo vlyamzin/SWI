@@ -1,5 +1,7 @@
 import {IndexRoute} from './routes';
-import * as express from 'express';
+import express from 'express';
+import webpack from 'webpack';
+import config = require("../webpack.config.js");
 import {LoginRoute} from './routes/login';
 import {Server} from './server';
 import {db} from './db';
@@ -11,6 +13,7 @@ const path = require('path')
     , methodOverride = require('method-override')
     , errorHandler = require('errorhandler')
     , port = normalizePort(process.env.PORT || 8080)
+    , compiler = webpack(config(process.env.NODE_ENV))
     , constants = require('../constants.json');
 
 
@@ -37,6 +40,25 @@ export class StaticServer {
         this.config();
         this.routes();
         this.api();
+
+        compiler.watch({
+            aggregateTimeout: 300,
+            ignored: /node_modules/
+        }, (err, stats) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            console.log(`\n**************************
+            \nWebpack rebuild...
+            \n**************************\n`);
+
+            console.log(stats.toString({
+              chunks: false,
+              colors: true
+            }))
+        });
 
         this.server.listen(port, () => {
             console.log('Express server is running on port ' + port);
