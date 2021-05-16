@@ -1,6 +1,7 @@
 import {IMapCoord} from '../logic/map';
-
 import {ITileImage} from "./tileImages";
+import {Application, Geometry, Graphics, Sprite} from 'pixi.js';
+import {container} from 'tsyringe';
 
 export interface IPoint {
     x: number
@@ -19,6 +20,9 @@ export interface ICube {
  * */
 export class Hex {
     private corners: Array<IPoint> = [];
+    public pixiSprite: Sprite;
+    public pixiGeometry: Graphics;
+    private pixiApp: Application;
     private readonly shiftX: number;
     private readonly shiftY: number;
 
@@ -30,9 +34,30 @@ export class Hex {
         this.shiftX = size * 2 * 3/4;
         this.shiftY = Math.sqrt(3)/2 * size;
 
+        this.pixiSprite = new Sprite();
+        this.pixiApp = container.resolve('PixiApp');
+
         for (let i = 0; i < 6; i += 1) {
             this.corners.push(this.hexCorner(i));
         }
+    }
+
+    public testDraw(): void {
+        this.pixiGeometry = new Graphics();
+        this.pixiGeometry.lineStyle(5, 0xFFFFFF);
+        this.corners.forEach((corner: IPoint, index: number) => {
+            if (index === 0) {
+                this.pixiGeometry.moveTo(corner.x, corner.y);
+            } else {
+                this.pixiGeometry.lineTo(corner.x, corner.y);
+            }
+        });
+        this.pixiGeometry.closePath();
+
+        // this.pixiApp.stage.addChild(this.pixiGeometry);
+
+        // const texture = this.pixiApp.renderer.generateTexture(this.pixiGeometry, 0, 1);
+        // this.pixiSprite = new Sprite(texture);
     }
 
     /**

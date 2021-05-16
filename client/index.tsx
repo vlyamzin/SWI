@@ -2,16 +2,14 @@ import 'reflect-metadata';
 import {IBoard, Board} from './gui/board';
 import {ImagePreloader} from './utils/imagePreloader';
 import {TileImages, ITileImage} from './gui/tileImages';
-import {MainHUD} from './gui/hud/main-hud';
 import './assets/styles/main.scss'
 import {GameState, IGameStateListener} from './logic/game-state';
-import {Login} from './gui/login';
-import React from 'react';
-import ReactDOM from 'react-dom';
 import {GameStateEnum} from './common/enums/game-state.enum';
 import {PlayerService} from './logic/services/player.service';
 import {filter} from 'rxjs/operators/filter';
 import {container} from 'tsyringe';
+import {Application, Loader} from 'pixi.js';
+import * as PIXI from 'pixi.js'
 
 class Game implements IGameStateListener {
     GameStateListeners = new Set([
@@ -20,6 +18,8 @@ class Game implements IGameStateListener {
         GameStateEnum.MAP_CREATION
     ]);
     public state: GameState;
+    private readonly app: Application;
+    private readonly imageLoader: ImagePreloader<ITileImage>;
     private id: number;
     private width: number;
     private height: number;
@@ -27,11 +27,16 @@ class Game implements IGameStateListener {
     private ps: PlayerService;
 
     constructor() {
-        imageList = new ImagePreloader<ITileImage>(TileImages.tiles);
+        window.PIXI = PIXI;
+        const canvas = document.getElementById('game') as HTMLCanvasElement;
         this.width = window.innerWidth;
         this.height = window.innerHeight;
         this.state = container.resolve(GameState);
         this.ps = container.resolve(PlayerService);
+        this.imageLoader = container.resolve(ImagePreloader);
+        this.app = new Application({view: canvas, width: this.width, height: this.height, antialias: true});
+
+        container.register<Application>('PixiApp', {useValue: this.app});
 
         this.init().catch(e => console.warn(e));
     }
@@ -40,7 +45,7 @@ class Game implements IGameStateListener {
         this.manageGameState();
         this.state.createPlayer();
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
-        await imageList.imageLoaded;
+        await this.imageLoader.load(TileImages.tiles);
         this.board = new Board(this.width, this.height);
     }
 
@@ -89,10 +94,11 @@ class Game implements IGameStateListener {
     private resizeCanvas(): void {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-        this.board.draw(this.width, this.height);
+        this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        // this.board.draw(this.width, this.height);
     }
 }
 
-let imageList: ImagePreloader<ITileImage>;
+// let imageList: ImagePreloader<ITileImage>;
 const game = new Game();
-export {imageList, game};     // it is singleton
+export {game};     // it is singleton

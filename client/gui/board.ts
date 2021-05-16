@@ -1,11 +1,12 @@
 import {Hex, IPoint} from "./hex"
 import {GameMap, IMapCoord} from "../logic/map"
-import {imageList} from '../index';
 import {GameState, IGameStateListener} from '../logic/game-state';
-// import {Container} from 'typedi';
 import {GameStateEnum} from '../common/enums/game-state.enum';
 import {filter} from 'rxjs/operators/filter';
-import {autoInjectable, container} from 'tsyringe';
+import {container} from 'tsyringe';
+import {Container, Sprite} from 'pixi.js';
+import {ImagePreloader} from '../utils/imagePreloader';
+import {ITileImage} from './tileImages';
 
 
 export interface IBoard {
@@ -49,21 +50,29 @@ export class Board implements IGameStateListener {
     protected prevY: number;
     private gameStateService: GameState;
     private gameState: GameStateEnum;
+    private pixiBoard: Container;
+
+    private loader: ImagePreloader<ITileImage>;
 
     constructor(protected width: number,
                 protected height: number,
                 ) {
+        const pixiApp: PIXI.Application = container.resolve('PixiApp');
+        this.loader = container.resolve(ImagePreloader);
+        this.pixiBoard = new Container();
         this.gameStateService = container.resolve(GameState);
         this.canvas = <HTMLCanvasElement>document.getElementById('game');
         this.context = this.canvas.getContext('2d');
-        this.context.fillStyle = this.backgroundColor;
+        // this.context.fillStyle = this.backgroundColor;
         this.hexSize = 64;
+
+        pixiApp.stage.addChild(this.pixiBoard);
 
         this.boardCenter = {
             x: width/2,
             y: height/2
         };
-        // this.draw(width, height);
+        this.draw(width, height);
 
         // listen click on the game board
         this.canvas.addEventListener('click', (event) => {
@@ -115,40 +124,60 @@ export class Board implements IGameStateListener {
 
         this.hexArray.length = 0;
 
-        let hex: Hex;
+        // let hex: Hex;
+
+
+        const container = new Container();
+
+        container.width = this.hexSize * 2;
+        container.height = this.hexSize * 2;
+
+        const sprite = new Sprite(this.loader.loader.resources['coruscant'].texture);
+        sprite.scale.set(0.3, 0.3);
+
+        container.addChild(sprite);
+
+        container.position.set(this.boardCenter.x, this.boardCenter.y);
+        container.pivot.set(container.width / 2, container.height / 2);
+
+        const hex = new Hex({x: container.pivot.x, y: container.pivot.y}, this.hexSize, GameMap.sixMemberMap[0][0]);
+        hex.testDraw();
+        container.addChild(hex.pixiGeometry);
+        this.pixiBoard.addChild(container);
         
-        for (let i = 0, lenCol = GameMap.sixMemberMap.length; i < lenCol; i += 1) {
-            for (let j = 0, lenRow = GameMap.sixMemberMap[i].length; j < lenRow; j += 1) {
-                // let index = Math.floor(Math.random() * (35 - 1) + 1); // temp solution
-                // hex in the center
-                if (i === 0) {
-                    hex = new Hex(this.boardCenter, this.hexSize, GameMap.sixMemberMap[i][j], imageList.imageCollection[0]);
-                    this.hexArray.push(hex);
-                } else {
-                    // new ring of hexes
-                    if (j === 0) {
-                        // find first hex from previous ring
-                        // @TODO use ES6 find instead lodash
-                        const startHex = this.hexArray.find( (h: Hex) => {
-                            return h.getMapCoords.a === GameMap.sixMemberMap[i-1][j].a && h.getMapCoords.b === GameMap.sixMemberMap[i-1][j].b;
-                        });
-
-                        const newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
-                        // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
-                        hex = this.createHex(i, j, newCoords);
-                        this.hexArray.push(hex);
-                    } else {
-                        // hexes in the same ring
-                        const newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
-                        // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
-                        hex = this.createHex(i, j, newCoords);
-                        this.hexArray.push(hex);
-                    }
-                } 
-
-                hex.drawHex(this.context);
-            }
-        }
+        // for (let i = 0, lenCol = GameMap.sixMemberMap.length; i < lenCol; i += 1) {
+        //     for (let j = 0, lenRow = GameMap.sixMemberMap[i].length; j < lenRow; j += 1) {
+        //         // let index = Math.floor(Math.random() * (35 - 1) + 1); // temp solution
+        //         // hex in the center
+        //         if (i === 0) {
+        //             hex = new Hex(this.boardCenter, this.hexSize, GameMap.sixMemberMap[i][j], imageList.imageCollection[0]);
+        //             this.hexArray.push(hex);
+        //         } else {
+        //             // new ring of hexes
+        //             if (j === 0) {
+        //                 // find first hex from previous ring
+        //                 // @TODO use ES6 find instead lodash
+        //                 const startHex = this.hexArray.find( (h: Hex) => {
+        //                     return h.getMapCoords.a === GameMap.sixMemberMap[i-1][j].a && h.getMapCoords.b === GameMap.sixMemberMap[i-1][j].b;
+        //                 });
+        //
+        //                 const newCoords = startHex.findNeighborCenterCoords(GameMap.sixMemberMap[i-1][j], GameMap.sixMemberMap[i][j], startHex.getCenter);
+        //                 // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
+        //                 hex = this.createHex(i, j, newCoords);
+        //                 this.hexArray.push(hex);
+        //             } else {
+        //                 // hexes in the same ring
+        //                 const newCoords = hex.findNeighborCenterCoords(GameMap.sixMemberMap[i][j-1], GameMap.sixMemberMap[i][j], hex.getCenter);
+        //                 // hex = new Hex(newCoords, this.hexSize, GameMap.sixMemberMap[i][j]);
+        //                 hex = this.createHex(i, j, newCoords);
+        //                 this.hexArray.push(hex);
+        //             }
+        //         }
+        //
+        //         // hex.drawHex(this.context);
+        //         hex.testDraw();
+        //     }
+        // }
     }
 
     /**

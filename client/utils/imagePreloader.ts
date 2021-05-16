@@ -1,44 +1,41 @@
+import {Loader} from 'pixi.js';
+import {singleton} from 'tsyringe';
+
 interface IImage {
     src: string,
-    image: HTMLImageElement
+    image: HTMLImageElement,
+    name: string
 }
 
 export interface IImagePreloader {
-    imageLoaded: Promise<any>
-    imageCollection: Array<IImage>
+    load: (srcList: Array<unknown>) => void
 }
 
-export class ImagePreloader<T extends IImage> implements IImagePreloader{
-    private imageList: Array<T>;
-    private promiseList: Array<Promise<any>>;
+@singleton()
+export class ImagePreloader<T extends IImage> implements IImagePreloader {
+    private _loader = Loader.shared;
 
-    constructor(protected srcList: Array<T>) {
-        this.imageList = [];
-        this.promiseList = [];
+    public load(srcList: Array<T>): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            srcList.forEach(item => this._loader.add(item.name, item.src));
+            this._loader.load();
 
-        srcList.forEach((i:T) => {
-            const img = new Image();
-            const promise = new Promise<void>((resolve, reject) => {
-                img.onload = () => {
-                    resolve();
-                };
-                img.onerror = () => {
-                    reject();
-                }
+            // this._loader.onLoad.add((loader) => console.log(loader)); // called once per loaded file
+            this._loader.onError.add((err) => {
+                // called once per errored file
+                console.error(err);
+                reject(err);
             });
-            
-            img.src = i.src;
-            i.image = img;
-            this.imageList.push(i);
-            this.promiseList.push(promise);
-        });
+            this._loader.onComplete.add(() => {
+                // called once when the queued resources all load.
+                console.log('All resources are loaded');
+                resolve(true);
+            });
+        })
+
     }
 
-    get imageLoaded(): Promise<any> {
-        return Promise.all(this.promiseList);
-    }
-
-    get imageCollection(): Array<T> {
-        return this.imageList;
+    public get loader(): Loader {
+        return this._loader;
     }
 }
